@@ -249,13 +249,105 @@ function drawLand(size: Size, scale: Scale) {
 
 
 function drawEnd(position: Position, scale: Scale) {
-    ctx.fillStyle = "blue";
-    ctx.fillRect(scale.x(position.x + 0.1), scale.y(position.y + 0.1), scale.squareSize * 0.8, scale.squareSize * 0.8);
+    const candyWidth = scale.squareSize * 0.6;
+    const candyHeight = scale.squareSize * 0.4;
+    const candySide = scale.squareSize * 0.25;
+
+    const x = scale.x(position.x + 0.5);
+    const y = scale.y(position.y + 0.5);
+
+    const primaryColor = '#FFD700';
+    const secondaryColor = '#DC143C';
+
+    ctx.beginPath();
+    ctx.fillStyle = primaryColor;
+    ctx.roundRect(x - candyWidth / 2, y - candyHeight / 2, candyWidth, candyHeight, 15);
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.strokeStyle = secondaryColor;
+    ctx.lineCap = "round";
+    ctx.lineWidth = 10;
+    ctx.moveTo(x - candyWidth / 3, y + candyHeight / 2);
+    ctx.lineTo(x + candyWidth / 3, y - candyHeight / 2);
+    ctx.stroke();
+
+    // Left side
+    ctx.beginPath();
+    ctx.fillStyle = secondaryColor;
+    ctx.moveTo(x - candyWidth / 2, y);
+    ctx.lineTo(x - candyWidth / 2 - candySide, y - candyHeight / 2);
+    ctx.lineTo(x - candyWidth / 2 - candySide * 0.8, y);
+    ctx.lineTo(x - candyWidth / 2 - candySide, y + candyHeight / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right side
+    ctx.beginPath();
+    ctx.fillStyle = secondaryColor;
+    ctx.moveTo(x + candyWidth / 2, y);
+    ctx.lineTo(x + candyWidth / 2 + candySide, y - candyHeight / 2);
+    ctx.lineTo(x + candyWidth / 2 + candySide * 0.8, y);
+    ctx.lineTo(x + candyWidth / 2 + candySide, y + candyHeight / 2);
+    ctx.closePath();
+    ctx.fill();
 }
 
 function drawBox(position: Position, scale: Scale) {
-    ctx.fillStyle = "yellow";
-    ctx.fillRect(scale.x(position.x + 0.1), scale.y(position.y + 0.1), scale.squareSize * 0.8, scale.squareSize * 0.8);
+    const x = scale.x(position.x + 0.1);
+    const y = scale.y(position.y + 0.2);
+    const width = scale.squareSize * 0.8;
+    const height = scale.squareSize * 0.8;
+
+    const boxDepth = height * 0.6; // Hloubka krabice
+    const flapOffset = 10; // Jak moc se klopa "zvedá"
+
+    // Bottom
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.rect(x, y + flapOffset, width, boxDepth);
+    ctx.fill();
+
+    ctx.fillStyle = '#C2B280';
+    ctx.strokeStyle = '#8B7355';
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y + flapOffset + boxDepth);
+    ctx.lineTo(x, y + flapOffset + boxDepth + height * 0.2);
+    ctx.lineTo(x + width, y + flapOffset + boxDepth + height * 0.2);
+    ctx.lineTo(x + width, y + flapOffset + boxDepth);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x, y + flapOffset);
+    ctx.lineTo(x, y + flapOffset - height * 0.2);
+    ctx.lineTo(x + width, y + flapOffset - height * 0.2);
+    ctx.lineTo(x + width, y + flapOffset);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x, y + flapOffset);
+    ctx.lineTo(x, y + flapOffset + boxDepth);
+    ctx.lineTo(x - boxDepth * 0.2, y + flapOffset + boxDepth * 1.2);
+    ctx.lineTo(x - boxDepth * 0.2, y + flapOffset - height * 0.2 + boxDepth * 0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + width, y + flapOffset);
+    ctx.lineTo(x + width, y + flapOffset + boxDepth);
+    ctx.lineTo(x + width + boxDepth * 0.2, y + flapOffset + boxDepth * 1.2);
+    ctx.lineTo(x + width + boxDepth * 0.2, y + flapOffset - height * 0.2 + boxDepth * 0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
 }
 
 function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Scale) {
