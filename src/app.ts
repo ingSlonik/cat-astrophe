@@ -3,7 +3,7 @@ import { drawLevel, getCatPosition, getMovedPosition, getTimeScale, isBox, isOut
 import levels from "./levels";
 
 let store: Store = {
-    state: { type: "home" },
+    state: { type: "home", timeStart: Date.now() },
     score: {
         level: 0,
         catastrophes: 0,
@@ -44,7 +44,7 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
 
     if (stateType === "home") {
         store = {
-            state: { type: "home" },
+            state: { type: "home", timeStart: Date.now() },
             score: {
                 level: 0,
                 catastrophes: 0,
@@ -57,7 +57,7 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
     } else if (stateType === "before") {
         store = {
             ...store,
-            state: { type: "before" },
+            state: { type: "before", timeStart: Date.now() },
         };
         textElement.innerText = "Brace Yourself!\n\nThe cats are on the prowl. Get ready for the fur-midable challenge ahead!";
         button.innerText = "Start Level";
@@ -72,7 +72,7 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
 
     } else if (stateType === "game") {
         if (!map) throw new Error("map is undefined");
-        console.log(map);
+
         store = {
             ...store,
             state: {
@@ -154,15 +154,13 @@ function draw() {
             const newPosition = getMovedPosition(state.positionAfter, direction);
             if (!isOut(newPosition, size) && !isBox(newPosition, boxes))
                 state.positionAfter = newPosition;
-
-            // TODO: cat-astrophe
         }
     }
     timeScate = scale;
 
     scoreElement.innerText = `Level: ${score.level + 1}, Cat-astrophes: ${score.catastrophes}`;
-    setupCanvas();
 
+    setupCanvas();
     drawLevel(levels[score.level], state);
 }
 

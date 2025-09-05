@@ -9,8 +9,8 @@ type Score = {
 };
 
 type GameState =
-    | { type: "home" }
-    | { type: "before" }
+    | { type: "home", timeStart: number }
+    | { type: "before", timeStart: number }
     | { type: "cat", timeStart: number }
     | { type: "game", positionBefore: Position, positionAfter: Position, map: boolean[][] }
     | { type: "catastrophe", position: Position }
