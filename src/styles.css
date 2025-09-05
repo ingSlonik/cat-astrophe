@@ -1,0 +1,62 @@
+html,
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: black;
+    color: #CCC;
+    font-family: fantasy;
+    text-align: center;
+    height: 100dvh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+body>* {
+    position: relative;
+    z-index: 2;
+}
+
+canvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
+
+#score {}
+
+#text {
+    padding: 20px 30px;
+    margin: 20px auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+}
+
+#footer {
+    text-align: right;
+    padding: 12px 24px;
+}
+
+a {
+    color: #AAA;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 20px 50px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
+
+#start {
+    top: 50%;
+}

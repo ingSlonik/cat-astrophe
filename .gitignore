@@ -1,0 +1,6 @@
+.parcel-cache/
+dist/
+node_modules/
+build.zip
+package-lock.json
+.DS_Store
