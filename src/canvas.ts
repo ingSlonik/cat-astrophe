@@ -13,24 +13,17 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 
 export function setupCanvas() {
-    // Získání poměru pixelů zařízení pro správné škálování.
     const dpr = window.devicePixelRatio || 1;
 
-    // Získání skutečné velikosti okna prohlížeče v CSS pixelech.
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    // Nastavení skutečné velikosti kreslící plochy canvasu (násobeno DPR).
-    // Tím zajistíme, že na každý CSS pixel připadá správný počet fyzických pixelů.
     canvas.width = screenWidth * dpr;
     canvas.height = screenHeight * dpr;
 
-    // Nastavení velikosti elementu v CSS (zůstává 1:1 s velikostí okna).
     canvas.style.width = `${screenWidth}px`;
     canvas.style.height = `${screenHeight}px`;
 
-    // Škálování kontextu, aby všechny kreslící operace (např. fillRect)
-    // používaly jednotky CSS pixelů a byly správně zvětšeny.
     ctx.scale(dpr, dpr);
 }
 
@@ -63,6 +56,9 @@ export function drawLevel(level: Level, state: GameState) {
     }
 
     boxes.forEach(box => drawBox(box, scale));
+
+
+
 }
 
 
@@ -353,11 +349,74 @@ function drawBox(position: Position, scale: Scale) {
 function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Scale) {
     const position = getTimePosition(positionBefore, positionAfter);
 
+    // ctx.beginPath();
+    // ctx.arc(scale.x(position.x + 0.5), scale.y(position.y + 0.5), scale.squareSize * 0.4, 0, 2 * Math.PI);
+    // ctx.fillStyle = '#f1c27d';
+    // ctx.fill();
+    // ctx.closePath();
+
+    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+
+    const x = scale.x(position.x + 0.5);
+    const headY = scale.y(position.y);
+    const headRadius = scale.squareSize * 0.15;
+
+    const neckY = scale.y(position.y + 0.2);
+    const elbowY = scale.y(position.y + 0.3);
+    const elbowXR = scale.squareSize * 0.3;
+    const torsoY = scale.y(position.y + 0.5);
+    const torsoX = scale.x(position.x + 0.5 + animation * 0.1);
+    const kneesY = scale.y(position.y + 0.7);
+    const feetY = scale.y(position.y + 0.8);
+
+    const headColor = '#f1c27d';
+    const bodyColor = '#444';
+
+    ctx.fillStyle = headColor;
+    ctx.strokeStyle = headColor;
+    ctx.lineWidth = 10;
+
     ctx.beginPath();
-    ctx.arc(scale.x(position.x + 0.5), scale.y(position.y + 0.5), scale.squareSize * 0.4, 0, 2 * Math.PI);
-    ctx.fillStyle = '#f1c27d';
+    ctx.arc(x, headY, headRadius, 0, 2 * Math.PI); // x, y, radius, startAngle, endAngle
     ctx.fill();
-    ctx.closePath();
+
+    // Neck
+    ctx.beginPath();
+    ctx.moveTo(x, headY);
+    ctx.lineTo(x, neckY);
+    ctx.stroke();
+
+    ctx.strokeStyle = bodyColor;
+
+    // Torso
+    ctx.beginPath();
+    ctx.moveTo(x, neckY);
+    ctx.quadraticCurveTo(x, (neckY + torsoY) / 2, torsoX, torsoY);
+    ctx.stroke();
+
+    // Left hand
+    ctx.beginPath();
+    ctx.moveTo(x, neckY);
+    ctx.quadraticCurveTo(x - elbowXR, elbowY, x - elbowXR * 0.4, torsoY);
+    ctx.stroke();
+
+    // Right hand
+    ctx.beginPath();
+    ctx.moveTo(x, neckY);
+    ctx.quadraticCurveTo(x + elbowXR, elbowY, x + elbowXR * 0.4, torsoY);
+    ctx.stroke();
+
+    // Left leg
+    ctx.beginPath();
+    ctx.moveTo(torsoX, torsoY);
+    ctx.quadraticCurveTo(x - elbowXR * 0.7, kneesY, x - elbowXR * 0.7, feetY);
+    ctx.stroke();
+
+    // Right leg
+    ctx.beginPath();
+    ctx.moveTo(torsoX, torsoY);
+    ctx.quadraticCurveTo(x + elbowXR * 0.7, kneesY, x + elbowXR * 0.7, feetY);
+    ctx.stroke();
 }
 
 function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], scale: Scale) {
