@@ -10,8 +10,7 @@ let store: Store = {
     },
 };
 
-
-button.onclick = () => {
+export function handleEnter() {
     const { state: { type } } = store;
 
     switch (type) {
@@ -21,13 +20,9 @@ button.onclick = () => {
         case "before":
             changeState("cat");
             break;
-        case "game":
-            // unreachable
-            changeState("before");
-            break;
         case "cat":
-            // unreachable
-            changeState("game");
+        case "game":
+            // nothing
             break;
         case "catastrophe":
             changeState("cat");
@@ -37,6 +32,8 @@ button.onclick = () => {
             break;
     }
 }
+
+button.onclick = handleEnter;
 
 function changeState(stateType: GameState["type"], map?: boolean[][]) {
     const level = levels[store.score.level];

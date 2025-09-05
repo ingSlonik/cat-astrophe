@@ -1,3 +1,5 @@
+import { handleEnter } from "./app";
+
 export const scoreElement = document.getElementById('score') as HTMLDivElement;
 export const textElement = document.getElementById('text') as HTMLDivElement;
 export const button = document.querySelector('button') as HTMLButtonElement;
@@ -17,6 +19,10 @@ window.addEventListener('keydown', (event) => {
       break;
     case 'ArrowRight':
       directions.push('right');
+      break;
+    case 'Enter':
+    case " ":
+      handleEnter();
       break;
   }
 });
