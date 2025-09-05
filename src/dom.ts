@@ -33,7 +33,6 @@ window.addEventListener('mousedown', (event) => {
   const x = event.clientX / window.innerWidth;
   const y = event.clientY / window.innerHeight;
 
-  console.log({ x, y })
   if (x < 0.5 && y < 0.5)
     directions.push(x < y ? 'left' : 'up');
 

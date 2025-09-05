@@ -1,6 +1,7 @@
 import { directions, button, scoreElement, textElement } from "./dom";
 import { drawLevel, getCatPosition, getMovedPosition, getTimeScale, isBox, isOut, setupCanvas } from "./canvas";
 import levels from "./levels";
+import { playMeow, playMusic } from "./audio";
 
 let store: Store = {
     state: { type: "home", timeStart: Date.now() },
@@ -11,6 +12,7 @@ let store: Store = {
 };
 
 export function handleEnter() {
+    playMusic();
     const { state: { type } } = store;
 
     switch (type) {
