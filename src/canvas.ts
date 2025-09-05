@@ -260,7 +260,7 @@ function drawEnd(position: Position, scale: Scale) {
     ctx.beginPath();
     ctx.strokeStyle = secondaryColor;
     ctx.lineCap = "round";
-    ctx.lineWidth = 10;
+    ctx.lineWidth = candySide * 0.4;
     ctx.moveTo(x - candyWidth / 3, y + candyHeight / 2);
     ctx.lineTo(x + candyWidth / 3, y - candyHeight / 2);
     ctx.stroke();
@@ -370,7 +370,7 @@ function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Sc
 
     ctx.fillStyle = headColor;
     ctx.strokeStyle = headColor;
-    ctx.lineWidth = 10;
+    ctx.lineWidth = headRadius * 0.6;
 
     ctx.beginPath();
     ctx.arc(x, headY, headRadius, 0, 2 * Math.PI); // x, y, radius, startAngle, endAngle
