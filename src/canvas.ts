@@ -34,6 +34,7 @@ export function drawLevel(level: Level, state: GameState) {
 
     drawLand(size, scale);
     drawEnd(end, scale);
+    boxes.forEach(box => drawBox(box, scale));
 
     if (state.type === "home") {
         drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart + 4000, 9999999999999, 1, scale);
@@ -54,11 +55,6 @@ export function drawLevel(level: Level, state: GameState) {
     } else {
         drawPlayer(state.position, state.position, scale);
     }
-
-    boxes.forEach(box => drawBox(box, scale));
-
-
-
 }
 
 
@@ -420,17 +416,93 @@ function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Sc
 }
 
 function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], scale: Scale) {
-    const position = getCatPosition(cat, timeStart, size, boxes);
+    const { isDone, position, direction } = getCatPosition(cat, timeStart, size, boxes);
 
-    if (position.isDone)
+    if (isDone)
         return;
 
-    ctx.beginPath();
-    ctx.arc(scale.x(position.position.x + 0.5), scale.y(position.position.y + 0.5), scale.squareSize * 0.4, 0, 2 * Math.PI);
+    ctx.save();
+
+    const animation = easeInOut(getTimeScale(1.5)) - 0.5;
+    const s = scale.squareSize;
+    const x = 0;
+
+    // Move to position
+    ctx.translate(scale.x(position.x + 0.5), scale.y(position.y + 0.5));
+
+    // Rotate
+    switch (direction) {
+        case "down": ctx.rotate(0); break;
+        case "up": ctx.rotate(Math.PI); break;
+        case "right": ctx.rotate(-Math.PI / 2); break;
+        case "left": ctx.rotate(Math.PI / 2); break;
+    }
+
+    // Y shift
+    ctx.translate(0, - s / 2);
+
+    const tailTopY = s * 0.1;
+    const tailCenterY = s * 0.2;
+    const assY = s * 0.4;
+    const bodyY = s * 0.5;
+    const headY = s * 0.7;
+    const r = s * 0.15;
+
     ctx.fillStyle = cat.color;
+    ctx.strokeStyle = cat.color;
+    ctx.lineCap = "round";
+    ctx.lineWidth = r * 0.2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, assY);
+    ctx.quadraticCurveTo(x - animation * r * 0.4, tailCenterY, x, tailTopY);
+    ctx.stroke();
+
+    ctx.lineWidth = r * 1.4;
+
+    ctx.beginPath();
+    ctx.moveTo(x, assY);
+    ctx.quadraticCurveTo(x + animation * r * 0.2, bodyY, x, headY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(x, headY, r, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.closePath();
+
+    // Paws
+    ctx.lineWidth = r * 0.7;
+
+    ctx.beginPath();
+    ctx.moveTo(x - r * 0.3, headY);
+    ctx.lineTo(x - r * 0.3, headY + r * (0.7 + animation * 0.5));
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + r * 0.3, headY);
+    ctx.lineTo(x + r * 0.3, headY + r * (0.7 - animation * 0.5));
+    ctx.stroke();
+
+    // Ears
+    ctx.strokeStyle = "#888";
+    ctx.globalAlpha = 0.9;
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(x - r * 0.1, headY + r * 0.1);
+    ctx.lineTo(x - r * 0.5, headY - r * 0.4);
+    ctx.lineTo(x - r * 0.8, headY + r * 0.1);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + r * 0.1, headY + r * 0.1);
+    ctx.lineTo(x + r * 0.5, headY - r * 0.4);
+    ctx.lineTo(x + r * 0.8, headY + r * 0.1);
+    ctx.stroke();
+
+    ctx.restore();
 }
+
+
 
 function drawCatastrophe(position: Position, scale: Scale) {
     ctx.beginPath();
