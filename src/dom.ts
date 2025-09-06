@@ -17,17 +17,24 @@ export const subtitles = getElement('#subtitles');
 
 
 window.addEventListener('keydown', (event) => {
+  // there is keyboard
+  arrows.className = "hide";
+
   switch (event.key) {
     case 'ArrowUp':
+    case 'w':
       handleDirection('up');
       break;
     case 'ArrowDown':
+    case 's':
       handleDirection('down');
       break;
     case 'ArrowLeft':
+    case 'a':
       handleDirection('left');
       break;
     case 'ArrowRight':
+    case 'd':
       handleDirection('right');
       break;
     case 'Enter':
