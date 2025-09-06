@@ -1,7 +1,7 @@
 import { rm } from 'fs/promises';
 import { createWriteStream, existsSync } from 'fs';
 import { exec } from 'child_process';
-import { create as archiver } from 'archiver';
+import archiver from 'archiver';
 import path from 'path';
 
 // --- Configuration ---
@@ -50,7 +50,7 @@ function runCommand(command: string): Promise<void> {
  * @returns A Promise that resolves on completion of the archiving.
  */
 function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
-    const archive = archiver('zip', { zlib: { level: 9 } }); // Highest compression
+    const archive = archiver.create('zip', { zlib: { level: 9 } }); // Highest compression
     const stream = createWriteStream(outPath);
 
     return new Promise((resolve, reject) => {
