@@ -421,7 +421,7 @@ function drawBox(position: Position, scale: Scale, index = 0) {
     if (!boxesEyes[index])
         boxesEyes[index] = {
             timeShow: Math.random() * 5000 + 5000,
-            opacity: Math.random() * 0.6 + 0.1,
+            opacity: Math.random() * 0.6 + 0.3,
             size: Math.random() * 0.2 + 0.05,
         };
 

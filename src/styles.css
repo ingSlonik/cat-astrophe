@@ -72,8 +72,9 @@ p {
     flex-direction: column;
     align-items: center;
     padding: 0px 40px;
-    padding-top: 100px;
+    padding-top: 50px;
     gap: 50px;
+    z-index: 4;
 }
 
 #text,
@@ -94,7 +95,9 @@ p {
 
 #subtitles-wrap {
     position: absolute;
-    bottom: 200px;
+    z-index: 10;
+    pointer-events: none;
+    bottom: 150px;
     left: 0;
     right: 0;
     padding: 0px 40px;
@@ -108,6 +111,7 @@ a {
 
 #arrows {
     position: absolute;
+    z-index: 4;
     bottom: 20px;
     right: 0px;
     left: 0px;
