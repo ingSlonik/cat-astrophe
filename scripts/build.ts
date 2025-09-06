@@ -62,8 +62,8 @@ function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
             .pipe(stream);
 
         stream.on('close', () => {
-            const sizeInMB = (archive.pointer() / 1024).toFixed(2);
-            console.log(`✅ ZIP archive created successfully. Size: ${sizeInMB} kB`);
+            const size = archive.pointer().toLocaleString();
+            console.log(`✅ ZIP archive created successfully. Size: ${size} bytes.`);
             resolve();
         });
         archive.finalize();
@@ -86,7 +86,7 @@ async function main() {
 
         // 2. Running Parcel build
         console.log('\n2/3: Running Parcel build...');
-        await runCommand(`npx parcel build ${PARCEL_ENTRY_POINT} --no-source-maps`);
+        await runCommand(`npx parcel build ${PARCEL_ENTRY_POINT} --no-source-maps --public-url ./`);
         console.log('✅ Parcel build completed successfully.');
 
         // 3. Zipping the dist folder
