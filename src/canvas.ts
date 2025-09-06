@@ -279,8 +279,8 @@ export function drawDirections(directions: Direction[], size: Size) {
 }
 
 function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
-    const x = scale.x(position.x + 0.5);
-    const y = scale.y(position.y + 0.6);
+    const x = scale.x(position.x + 0.7);
+    const y = scale.y(position.y + 0.7);
 
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
@@ -289,7 +289,7 @@ function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
     if (timeHide)
         ctx.globalAlpha = 1 - elseInOutAtTime(timeHide, 300);
 
-    ctx.font = `${scale.squareSize * 0.6}px sans-serif`;
+    ctx.font = `${scale.squareSize * 0.4}px sans-serif`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText("🚧", x, y + animation * scale.squareSize * 0.02);
