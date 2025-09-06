@@ -35,7 +35,7 @@ export function drawLevel(level: Level, state: GameState) {
 
     drawLand(size, scale);
     drawEnd(end, scale);
-    boxes.forEach(box => drawBox(box, scale));
+    boxes.forEach((box, i) => drawBox(box, scale, i));
 
     if (state.type === "home") {
         drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart + 4000, 9999999999999, 1, scale);
@@ -50,7 +50,8 @@ export function drawLevel(level: Level, state: GameState) {
         drawPlayer(start, start, scale);
         drawNotMove(start, scale);
         // draw cats
-        cats.forEach(cat => drawCat(cat, state.timeStart, size, boxes, scale));
+        if (state.timeStart <= Date.now())
+            cats.forEach(cat => drawCat(cat, state.timeStart, size, boxes, scale));
     } else if (state.type === "game") {
         drawPlayer(state.positionBefore, state.positionAfter, scale);
         drawNotMove(start, scale, state.timeStart);
@@ -82,6 +83,12 @@ function getScale(size: Size): Scale {
     };
 }
 
+export function getNextNow(speed = 1) {
+    const now = Date.now();
+    const frame = Math.floor(now / timeFrame / speed);
+    return (frame + 1) * timeFrame * speed;
+}
+
 export function getTimeScale(speed = 1, delay = 0) {
     const frame = Math.floor(timeFrame / speed);
     const rest = (Date.now() - delay * frame) % frame;
@@ -107,9 +114,18 @@ function easeInOut(t: number) {
 function sinInOut(t: number) {
     return 0.5 * (1 - Math.sin(Math.PI * t * 2));
 }
+function easeOut(t: number) {
+    if (t < 0) return 1;
+    if (t > 1) return 0;
+    return -4.375 * (t ** 2) + 3.375 * t + 1;
+}
+function easeIn(t: number) {
+    if (t < 0) return 0;
+    if (t > 1) return 1;
+    return -4.375 * (t ** 2) + 5.375 * t;
+}
 
-function elseInOutAtTime(time: number, duration: number) {
-    const now = Date.now();
+function elseInOutAtTime(time: number, duration: number, now = Date.now()) {
     if (now < time) return 0;
     if (now > time + duration) return 1;
     return easeInOut((now - time) / duration / 2);
@@ -252,7 +268,7 @@ export function drawDirections(directions: Direction[], size: Size) {
 
     const scale = getScale(size);
 
-    const x = scale.x(size.x / 2 + 1);
+    const x = scale.x(1);
     const y = scale.y(size.y + 1.1);
 
     ctx.font = `18px sans-serif`;
@@ -283,6 +299,9 @@ function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
 
 const candies = ["🍬", "🍭", "🍮", "🍫", "🍯", "🎂", "🍰", "🍩", "🍪", "🧁", "🥧"];
 let candy = getRandom(candies);
+export function getCandy() {
+    return candy;
+}
 export function setNewEnd() {
     return candy = getRandom(candies);
 }
@@ -337,10 +356,11 @@ function drawEnd(position: Position, scale: Scale) {
     */
 }
 
+const boxesEyes: { timeShow: number, opacity: number, size: number }[] = [];
 /**
  * 📦 🗃️ 🗳️ 🎁
  */
-function drawBox(position: Position, scale: Scale) {
+function drawBox(position: Position, scale: Scale, index = 0) {
     const x = scale.x(position.x + 0.1);
     const y = scale.y(position.y + 0.2);
     const width = scale.squareSize * 0.8;
@@ -350,9 +370,10 @@ function drawBox(position: Position, scale: Scale) {
     const flapOffset = 10; // Jak moc se klopa "zvedá"
 
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+    const animationEyes = easeInOut(getTimeScale(0.03));
 
     // Bottom
-    ctx.fillStyle = '#222';
+    ctx.fillStyle = '#111';
     ctx.beginPath();
     ctx.rect(x, y + flapOffset, width, boxDepth);
     ctx.fill();
@@ -396,6 +417,24 @@ function drawBox(position: Position, scale: Scale) {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
+    if (!boxesEyes[index])
+        boxesEyes[index] = {
+            timeShow: Math.random() * 5000 + 5000,
+            opacity: Math.random() * 0.6 + 0.1,
+            size: Math.random() * 0.2 + 0.05,
+        };
+
+    const eyes = boxesEyes[index];
+
+    drawEyes(
+        { x: position.x + 0.5, y: position.y + 0.5 },
+        scale.squareSize / 100 * eyes.size,
+        eyes.timeShow, 10_000,
+        eyes.opacity,
+        scale,
+        animationEyes * 10_000
+    );
 }
 
 let playerDirection = 1;
@@ -636,7 +675,7 @@ function drawBoot(scale: Scale, translateX = 0, animation = 0) {
  * 🐈 🐈‍⬛ 🐱 😺...(faces)
  */
 function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], scale: Scale) {
-    const { isDone, position, direction } = getCatPosition(cat, timeStart, size, boxes);
+    const { isDone, position, direction, state } = getCatPosition(cat, timeStart, size, boxes);
 
     if (isDone)
         return;
@@ -644,11 +683,20 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
     ctx.save();
 
     const animation = easeInOut(getTimeScale(1.5)) - 0.5;
+
     const s = scale.squareSize;
     const x = 0;
 
     // Move to position
     ctx.translate(scale.x(position.x + 0.5), scale.y(position.y + 0.5));
+
+    // Jump
+    let animationJump = 1;
+    if (state === "jumpIn")
+        animationJump = easeIn(getTimeScale(1));
+    if (state === "jumpOut")
+        animationJump = easeOut(getTimeScale(1));
+    ctx.scale(animationJump, animationJump);
 
     // Rotate
     switch (direction) {
@@ -689,22 +737,8 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
     ctx.arc(x, headY, r, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Paws
-    ctx.lineWidth = r * 0.7;
-
-    ctx.beginPath();
-    ctx.moveTo(x - r * 0.3, headY);
-    ctx.lineTo(x - r * 0.3, headY + r * (0.7 + animation * 0.5));
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(x + r * 0.3, headY);
-    ctx.lineTo(x + r * 0.3, headY + r * (0.7 - animation * 0.5));
-    ctx.stroke();
-
     // Ears
     ctx.strokeStyle = "#888";
-    ctx.globalAlpha = 0.9;
     ctx.lineWidth = 1;
 
     ctx.beginPath();
@@ -718,6 +752,53 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
     ctx.lineTo(x + r * 0.5, headY - r * 0.4);
     ctx.lineTo(x + r * 0.8, headY + r * 0.1);
     ctx.stroke();
+
+    // Paws
+    ctx.lineWidth = r * 0.6;
+    ctx.strokeStyle = cat.color;
+
+    if (state === "walk") {
+        ctx.beginPath();
+        ctx.moveTo(x - r * 0.3, headY);
+        ctx.lineTo(x - r * 0.3, headY + r * (0.7 + animation * 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + r * 0.3, headY);
+        ctx.lineTo(x + r * 0.3, headY + r * (0.7 - animation * 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - r * 0.3, assY);
+        ctx.lineTo(x - r * 0.3, assY - r * (0.3 + animation * 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + r * 0.3, assY);
+        ctx.lineTo(x + r * 0.3, assY - r * (0.3 - animation * 0.5));
+        ctx.stroke();
+    } else {
+        // Jump
+        ctx.beginPath();
+        ctx.moveTo(x - r * 0.3, headY);
+        ctx.lineTo(x - r * 0.3, headY + r * (0.7 + 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + r * 0.3, headY);
+        ctx.lineTo(x + r * 0.3, headY + r * (0.7 + 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - r * 0.3, assY);
+        ctx.lineTo(x - r * 0.3, assY - r * (0.3 + 0.5));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + r * 0.3, assY);
+        ctx.lineTo(x + r * 0.3, assY - r * (0.3 + 0.5));
+        ctx.stroke();
+    }
 
     ctx.restore();
 }
@@ -740,22 +821,22 @@ function drawCatastrophe(position: Position, scale: Scale) {
     ctx.fillText(catastrophe, x, y + animation * scale.squareSize * 0.1);
 }
 
-function drawEyes(position: Position, size: number, timeStart: number, timeEnd: number, opacity: number, scale: Scale) {
+function drawEyes(position: Position, size: number, timeStart: number, timeEnd: number, opacity: number, scale: Scale, time?: number) {
     ctx.save();
     ctx.translate(-60 * size, 0);
-    drawEye(position, size, timeStart, timeEnd, opacity, scale);
+    drawEye(position, size, timeStart, timeEnd, opacity, scale, time);
     ctx.translate(120 * size, 0);
-    drawEye(position, size, timeStart, timeEnd, opacity, scale);
+    drawEye(position, size, timeStart, timeEnd, opacity, scale, time);
     ctx.restore();
 }
-function drawEye(position: Position, size: number, timeStart: number, timeEnd: number, opacity: number, scale: Scale) {
+function drawEye(position: Position, size: number, timeStart: number, timeEnd: number, opacity: number, scale: Scale, time?: number) {
     ctx.save();
 
-    const animationOpacity = elseInOutAtTime(timeStart, 300);
-    const animationOut = elseInOutAtTime(timeStart, 1000);
-    const animationIn = elseInOutAtTime(timeStart + 1000, 1000);
+    const animationOpacity = elseInOutAtTime(timeStart, 300, time);
+    const animationOut = elseInOutAtTime(timeStart, 1000, time);
+    const animationIn = elseInOutAtTime(timeStart + 1000, 1000, time);
 
-    const animationLeave = 1 - elseInOutAtTime(timeEnd, 1000);
+    const animationLeave = 1 - elseInOutAtTime(timeEnd, 1000, time);
 
     ctx.globalAlpha = opacity * animationOpacity * animationLeave;
 
@@ -797,7 +878,7 @@ export function getCatPosition(cat: Cat, timeStart: number, size: Size, boxes: P
 
     const step = (Date.now() - timeStart) / timeFrame;
 
-    let state: CatPosition["state"] = step < 0 ? "jumpIn" : "walk";
+    let state: CatPosition["state"] = step < 1 ? "jumpIn" : "walk";
     let position = cat.start as Position;
     let direction = cat.start.direction;
 
