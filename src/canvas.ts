@@ -264,7 +264,7 @@ export function drawDirections(directions: Direction[], size: Size) {
 
 function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
     const x = scale.x(position.x + 0.5);
-    const y = scale.y(position.y + 0.5);
+    const y = scale.y(position.y + 0.6);
 
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
@@ -273,10 +273,10 @@ function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
     if (timeHide)
         ctx.globalAlpha = 1 - elseInOutAtTime(timeHide, 300);
 
-    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.font = `${scale.squareSize * 0.6}px sans-serif`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
-    ctx.fillText("🚧", x, y + animation * scale.squareSize * 0.1);
+    ctx.fillText("🚧", x, y + animation * scale.squareSize * 0.02);
 
     ctx.restore();
 }
@@ -289,11 +289,11 @@ export function setNewEnd() {
 
 function drawEnd(position: Position, scale: Scale) {
     const x = scale.x(position.x + 0.5);
-    const y = scale.y(position.y + 0.5);
+    const y = scale.y(position.y + 0.7);
 
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
-    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.font = `${Math.floor(scale.squareSize * 0.5)}px sans-serif`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(candy, x, y + animation * scale.squareSize * 0.1);
@@ -349,7 +349,6 @@ function drawBox(position: Position, scale: Scale) {
     const boxDepth = height * 0.6; // Hloubka krabice
     const flapOffset = 10; // Jak moc se klopa "zvedá"
 
-    // TODO: animate
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
     // Bottom
@@ -383,8 +382,8 @@ function drawBox(position: Position, scale: Scale) {
     ctx.beginPath();
     ctx.moveTo(x, y + flapOffset);
     ctx.lineTo(x, y + flapOffset + boxDepth);
-    ctx.lineTo(x - boxDepth * 0.2, y + flapOffset + boxDepth * 1.2);
-    ctx.lineTo(x - boxDepth * 0.2, y + flapOffset - height * 0.2 + boxDepth * 0.2);
+    ctx.lineTo(x - boxDepth * 0.2 + animation * boxDepth * 0.1, y + flapOffset + boxDepth * 1.2);
+    ctx.lineTo(x - boxDepth * 0.2 + animation * boxDepth * 0.1, y + flapOffset - height * 0.2 + boxDepth * 0.2);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -392,8 +391,8 @@ function drawBox(position: Position, scale: Scale) {
     ctx.beginPath();
     ctx.moveTo(x + width, y + flapOffset);
     ctx.lineTo(x + width, y + flapOffset + boxDepth);
-    ctx.lineTo(x + width + boxDepth * 0.2, y + flapOffset + boxDepth * 1.2);
-    ctx.lineTo(x + width + boxDepth * 0.2, y + flapOffset - height * 0.2 + boxDepth * 0.2);
+    ctx.lineTo(x + width + boxDepth * 0.2 - animation * boxDepth * 0.1, y + flapOffset + boxDepth * 1.2);
+    ctx.lineTo(x + width + boxDepth * 0.2 - animation * boxDepth * 0.1, y + flapOffset - height * 0.2 + boxDepth * 0.2);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -735,7 +734,7 @@ function drawCatastrophe(position: Position, scale: Scale) {
 
     const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
-    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.font = `${scale.squareSize * 0.8}px sans - serif`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(catastrophe, x, y + animation * scale.squareSize * 0.1);
