@@ -104,6 +104,9 @@ function getTimePosition(positionFrom: Position, positionTo: Position): Position
 function easeInOut(t: number) {
     return 0.5 * (1 - Math.cos(Math.PI * t * 2));
 }
+function sinInOut(t: number) {
+    return 0.5 * (1 - Math.sin(Math.PI * t * 2));
+}
 
 function elseInOutAtTime(time: number, duration: number) {
     const now = Date.now();
@@ -396,40 +399,132 @@ function drawBox(position: Position, scale: Scale) {
     ctx.stroke();
 }
 
-
-/*
-🚶 (U+1F6B6): Chodec. Zobrazuje osobu v pohybu.
-🧍 (U+1F9CD): Stojící osoba.
-🏃 (U+1F3C3): Běžec. Značí sportovní aktivitu nebo spěch.
-🤸 (U+1F938): Gymnasta nebo akrobat. Symbolizuje flexibilitu nebo fyzické umění.
-🧘 (U+1F9D8): Osoba v lotosu (meditující).
-🙋 (U+1F64B): Osoba zvedající ruku. Používá se pro přihlášení, odpověď nebo pozdrav.
-🙅 (U+1F645): Osoba s gestem „ne“. Značí odmítnutí nebo zákaz.
-🤷 (U+1F937): Osoba pokrčující rameny. Vyjadřuje nejistotu nebo nevědomost.
-
-🧑 (U+1F9D1): Dospělá osoba bez určení pohlaví.
-👨 (U+1F468): Muž.
-👩 (U+1F469): Žena.
-👴 (U+1F474): Starý muž.
-👵 (U+1F475): Stará žena.
-👶 (U+1F476): Dítě.
-
-👮 (U+1F46E): Policista.
-👨‍⚕️ (U+1F468 + U+200D + U+2695): Lékař.
-🧑‍🍳 (U+1F9D1 + U+200D + U+1F373): Kuchař nebo šéfkuchař.
-🧑‍🏫 (U+1F9D1 + U+200D + U+1F3EB): Učitel.
- */
+let playerDirection = 1;
 function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Scale) {
     const position = getTimePosition(positionBefore, positionAfter);
 
-    // ctx.beginPath();
-    // ctx.arc(scale.x(position.x + 0.5), scale.y(position.y + 0.5), scale.squareSize * 0.4, 0, 2 * Math.PI);
-    // ctx.fillStyle = '#f1c27d';
-    // ctx.fill();
-    // ctx.closePath();
+    if (positionBefore.x < positionAfter.x)
+        playerDirection = 1;
+    else if (positionBefore.x > positionAfter.x)
+        playerDirection = 3;
+    else if (positionBefore.y < positionAfter.y)
+        playerDirection = 2;
+    else if (positionBefore.y > positionAfter.y)
+        playerDirection = 0;
 
-    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+    const isMoving = positionBefore.x !== positionAfter.x || positionBefore.y !== positionAfter.y;
 
+    const animationBoots = sinInOut(getTimeScale(1)) - 0.5;
+    const animationSmoke = sinInOut(getTimeScale(0.2)) - 0.5;
+
+
+    const hatColor = '#5C4033';
+    const cigarColor = '#A0522D';
+    const cigarTipColor = '#FF0000';
+    const outlineColor = '#000000';
+
+    const s = scale.squareSize / 2;
+    const lineWidth = s * 0.02;
+
+    ctx.save();
+
+    ctx.translate(scale.x(position.x + 0.5), scale.y(position.y + 0.5));
+
+    ctx.rotate(playerDirection * Math.PI / 2);
+
+    // Boots
+    if (isMoving) {
+        drawBoot(scale, s * -0.1, animationBoots);
+        drawBoot(scale, -s * 0.6, -animationBoots);
+    }
+
+    // Cigar
+    const cigarLength = s * 0.3;
+    const cigarWidth = s * 0.1;
+    const cigarAngle = -Math.PI / 3; // Úhel doutníku
+
+    const cigarStartX = s * 0.22;
+    const cigarStartY = s * -0.37;
+
+    ctx.save(); // Uložit aktuální stav transformace
+    ctx.translate(cigarStartX, cigarStartY); // Přesunout se na počáteční bod
+    ctx.rotate(cigarAngle); // Otočit o úhel
+
+    ctx.strokeStyle = outlineColor;
+    ctx.beginPath();
+    ctx.roundRect(0, -cigarWidth / 2, cigarLength, cigarWidth, s * 0.1);
+    ctx.fillStyle = cigarColor;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cigarLength, 0, cigarWidth / 2, -Math.PI / 2, Math.PI / 2, false);
+    ctx.fillStyle = cigarTipColor;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Hat
+    const hatRadius = s * 0.6;
+    ctx.strokeStyle = outlineColor;
+    ctx.fillStyle = hatColor;
+    ctx.lineWidth = lineWidth;
+
+    ctx.beginPath();
+    ctx.arc(0, 0, hatRadius, 0, Math.PI * 2, false);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, hatRadius * 0.55, 0, Math.PI * 2, false);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, hatRadius * 0.2, hatRadius * 0.37, 0, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(hatRadius * 0.4, hatRadius * 0.1);
+    ctx.quadraticCurveTo(
+        hatRadius * 0.25, hatRadius * -0.1,
+        hatRadius * 0.25, hatRadius * -0.35,
+    );
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(hatRadius * -0.4, hatRadius * 0.1);
+    ctx.quadraticCurveTo(
+        hatRadius * -0.25, hatRadius * -0.1,
+        hatRadius * -0.25, hatRadius * -0.35,
+    );
+    ctx.stroke();
+
+
+    // Smoke
+    ctx.lineWidth = s * 0.1;
+    ctx.lineCap = "round";
+
+    var grad = ctx.createLinearGradient(s * 0.4, s * -0.6, s * 0.4, s * -0.3);
+    grad.addColorStop(0, "rgba(180, 180, 180, 0.9)");
+    grad.addColorStop(1, "rgba(255, 255, 255, 0.1)");
+
+    ctx.strokeStyle = grad;
+
+    ctx.beginPath();
+    ctx.moveTo(s * 0.4, s * -0.56);
+    ctx.bezierCurveTo(
+        s * 0.4 + animationSmoke * s * 0.18, s * -0.5,
+        s * 0.4 - animationSmoke * s * 0.18, s * -0.4,
+        s * 0.4, s * -0.3
+    );
+    ctx.stroke();
+
+
+    ctx.restore();
+
+
+    /*
     const x = scale.x(position.x + 0.5);
     const headY = scale.y(position.y);
     const headRadius = scale.squareSize * 0.15;
@@ -490,6 +585,52 @@ function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Sc
     ctx.moveTo(torsoX, torsoY);
     ctx.quadraticCurveTo(x + elbowXR * 0.7, kneesY, x + elbowXR * 0.7, feetY);
     ctx.stroke();
+    */
+}
+
+function drawBoot(scale: Scale, translateX = 0, animation = 0) {
+
+    const s = scale.squareSize / 2;
+    const lineWidth = s * 0.02;
+
+    const outlineColor = '#000000';
+    const bootColor = '#D2B48C';
+    const spurColor = '#EEE';
+    const bootCircleColor = "#999";
+
+    ctx.save();
+
+    ctx.translate(translateX, animation * s * 0.9 + s * -0.4);
+
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = outlineColor;
+    ctx.fillStyle = bootColor;
+    ctx.beginPath();
+    ctx.roundRect(s * 0.2, 0, s * 0.3, s * 0.7, s * 0.2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = spurColor;
+    ctx.beginPath();
+    ctx.roundRect(s * 0.25, s * 0.05, s * 0.2, s * 0.6, s * 0.2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(s * 0.3, s * 0.18);
+    ctx.lineTo(s * 0.4, s * 0.18);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(s * 0.3, s * 0.22);
+    ctx.lineTo(s * 0.4, s * 0.22);
+    ctx.stroke();
+
+    ctx.fillStyle = bootCircleColor;
+    ctx.beginPath();
+    ctx.arc(s * 0.35, s * 0.72, s * 0.07, 0, Math.PI * 2, false);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
 }
 
 /**
