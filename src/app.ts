@@ -1,5 +1,5 @@
 import { arrows, button, scoreElement, textElement } from "./dom";
-import { drawDirections, drawLevel, getCatPosition, getMovedPosition, getTimeScale, isBox, isOut, setNewCatastrophe, setNewEnd, setupCanvas } from "./canvas";
+import { drawDirections, drawLevel, getCandy, getCatPosition, getMovedPosition, getNextNow, getTimeScale, isBox, isOut, setNewCatastrophe, setNewEnd, setupCanvas } from "./canvas";
 import levels from "./levels";
 import { meow, speak, speakCatastrophe, speakDirection, speakStartGame, speakStop, speakWin } from "./audio/audio";
 
@@ -80,8 +80,12 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
                 catastrophes: 0,
             },
         };
-        textElement.innerText = "Cross the black cat's path and trigger a true Cat-astrophe!\n\nUse the arrow keys or tap the edges of the screen to move.\n\nGood luck!";
-        button.innerText = "Start Game";
+        textElement.innerHTML = `<h2>Cross the black cat's path and trigger a true Cat-astrophe!</h2>
+<p><b>Your mission:</b> Get the candy! ${getCandy()}</p>
+<p><b>Your obstacle:</b> One very unlucky black cat. 🐈‍⬛</p>
+<p><i>Use the arrows (← ↑ → ↓) to guide me.<br />Just... try not to get me killed, okay?</i></p>
+<p><b>Good luck! You're gonna need it. 😉</b></p>`;
+        button.innerText = "Begin the Madness!";
         textElement.className = button.className = "";
         arrows.className = "hide";
 
@@ -90,15 +94,17 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
             ...store,
             state: { type: "before", timeStart: Date.now() },
         };
-        textElement.innerText = "Brace Yourself!\n\nThe cats are on the prowl. Get ready for the fur-midable challenge ahead!";
-        button.innerText = "Start Level";
+        textElement.innerHTML = `<h2>Sweet Victory! ${getCandy()}</h2>
+<p>You dodged disaster and secured the goods. You're a legend! 🥳</p>
+<p>But don't get too comfortable, the next level is waiting...</p>`;
+        button.innerText = "Bring it on! 💪";
         textElement.className = button.className = "";
         arrows.className = "hide";
 
     } else if (stateType === "cat") {
         store = {
             ...store,
-            state: { type: stateType, timeStart: Date.now() },
+            state: { type: stateType, timeStart: getNextNow() },
         };
         textElement.className = button.className = "hide";
 
@@ -133,8 +139,10 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
             state: { type: "catastrophe", position }
         };
 
-        textElement.innerText = "You crossed the black cat's path! Superstition is real, and now you've got 7 years of bad luck... or at least until you restart the level.";
-        button.innerText = "Try Again";
+        textElement.innerHTML = `<h2>CAT-ASTROPHE! 🙀</h2>
+<p>You crossed the path! Now suffer the comically bad luck.</p>
+<p>Was it the cat? Or were you just that clumsy? 🤔</p>`;
+        button.innerText = "Try Again! 😠";
         textElement.className = button.className = "";
         arrows.className = "hide";
 
@@ -144,8 +152,11 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
             state: { type: "end", position },
         };
 
-        textElement.innerText = `You Survived the Cat-astrophe!\n\nYou only experienced ${store.score.catastrophes} Cat-astrophes!\n\nYou've successfully navigated the feline chaos and finished the game. You're the cat's whiskers!\nThanks for playing.`;
-        button.innerText = "Play Again";
+        textElement.innerHTML = `<h2>You Survived! 🏆</h2>
+<p>You only triggered <b>${store.score.catastrophes} cat-astrophes!</b> Not bad... for you. 🤕</p>
+<p>You navigated the feline chaos and beat the odds.<br />You're officially the cat's pajamas! 😼</p>
+<p><b>Thanks for playing! Hope you had a blast. 💥</b></p>`;
+        button.innerText = "Play Again?";
         textElement.className = button.className = "";
         arrows.className = "hide";
     }
@@ -208,7 +219,7 @@ function draw() {
 
     const level = levels[score.level];
 
-    scoreElement.innerText = `Level: ${score.level + 1}, Cat-astrophes: ${score.catastrophes}`;
+    scoreElement.innerText = `Level: ${score.level + 1}\nCat-astrophes: ${score.catastrophes}`;
 
     setupCanvas();
     drawLevel(level, state);
