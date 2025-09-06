@@ -3,9 +3,9 @@ body {
     margin: 0px;
     padding: 0px;
     background-color: #111;
-    color: #CCC;
-    font-family: fantasy;
-    font-style: 18px;
+    color: #FFF;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
     text-align: center;
     height: 100dvh;
 }
@@ -30,7 +30,15 @@ canvas {
 
 #score {}
 
-#text {
+#controls {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    display: flex;
+}
+
+#text,
+#subtitles {
     padding: 20px 30px;
     margin: 20px auto;
     background-color: rgba(0, 0, 0, 0.5);
@@ -46,6 +54,18 @@ a {
     color: #AAA;
 }
 
+#arrows {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+#arrows>div {
+    display: flex;
+}
+
 button {
     display: block;
     margin: 20px auto;
@@ -55,10 +75,19 @@ button {
     cursor: pointer;
 }
 
-.hide {
-    display: none;
-}
-
 #start {
     top: 50%;
+}
+
+#text,
+#arrows,
+#the-button,
+#subtitles {
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+.hide {
+    opacity: 0 !important;
+    pointer-events: none;
 }
