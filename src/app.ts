@@ -1,7 +1,8 @@
 import { arrows, button, scoreElement, textElement } from "./dom";
 import { drawDirections, drawLevel, getCandy, getCatPosition, getMovedPosition, getNextNow, getTimeScale, isBox, isOut, setNewCatastrophe, setNewEnd, setupCanvas } from "./canvas";
 import levels from "./levels";
-import { meow, speak, speakCatastrophe, speakDirection, speakStartGame, speakStop, speakWin } from "./audio/audio";
+import { meow, speakCatastrophe, speakDirection, speakStartGame, speakStop, speakWin } from "./audio/speak";
+import { playMusic } from "./audio/sound";
 
 let store: Store = {
     controls: {
@@ -23,11 +24,15 @@ export function getStore() {
 }
 
 export function handleControl(type: "music" | "sound") {
-    if (type === "sound")
-        speakStop();
-
     const value = !store.controls[type];
     store.controls[type] = value;
+
+    if (type === "music" && value)
+        playMusic();
+
+    if (type === "sound" && !value)
+        speakStop();
+
     return value;
 };
 
@@ -41,9 +46,8 @@ export function handleDirection(direction: Direction) {
 }
 
 export function handleEnter() {
-    // playMusic();
-    // speak("Meow, Meow, I am the cat.");
-    // singSong();
+    playMusic();
+
     const { state: { type } } = store;
 
     switch (type) {

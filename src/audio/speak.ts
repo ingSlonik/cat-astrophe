@@ -1,16 +1,8 @@
-//import { zzfx } from 'ZzFX';
 import { getRandom } from '../common';
 import { getStore } from '../app';
-import { playMeow } from './meow';
+import { playMeow } from './sound';
 import { subtitles } from '../dom';
-// import zzfxM from './zzfxm';
 
-export function playMusic() {
-    const { controls: { music } } = getStore();
-    if (music) {
-        // TODO: add music
-    }
-}
 
 const cats = ["🐈", "🐱", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"];
 
