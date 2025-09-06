@@ -1,24 +1,34 @@
-import { handleEnter } from "./app";
+import { handleControl, handleDirection, handleEnter } from "./app";
 
-export const scoreElement = document.getElementById('score') as HTMLDivElement;
-export const textElement = document.getElementById('text') as HTMLDivElement;
-export const button = document.querySelector('button') as HTMLButtonElement;
+function getElement(selector: string) {
+  const element = document.querySelector(selector);
+  if (!element) throw new Error(`Element not found: ${selector}`);
+  return element as HTMLElement;
+}
 
-export const directions: Direction[] = [];
+const musicButton = getElement('#music');
+const soundButton = getElement('#sound');
+
+export const scoreElement = getElement('#score');
+export const textElement = getElement('#text');
+export const button = getElement('#the-button');
+export const arrows = getElement('#arrows');
+export const subtitles = getElement('#subtitles');
+
 
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'ArrowUp':
-      directions.push('up');
+      handleDirection('up');
       break;
     case 'ArrowDown':
-      directions.push('down');
+      handleDirection('down');
       break;
     case 'ArrowLeft':
-      directions.push('left');
+      handleDirection('left');
       break;
     case 'ArrowRight':
-      directions.push('right');
+      handleDirection('right');
       break;
     case 'Enter':
     case " ":
@@ -27,21 +37,11 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
-window.addEventListener('mousedown', (event) => {
-  event.preventDefault();
+musicButton.onclick = () => musicButton.innerText = handleControl('music') ? '🔊' : '🔇';
+soundButton.onclick = () => soundButton.innerText = handleControl('sound') ? '💬' : '🚫';
 
-  const x = event.clientX / window.innerWidth;
-  const y = event.clientY / window.innerHeight;
-
-  if (x < 0.5 && y < 0.5)
-    directions.push(x < y ? 'left' : 'up');
-
-  if (x < 0.5 && y > 0.5)
-    directions.push(x > y ? 'left' : 'down');
-
-  if (x > 0.5 && y < 0.5)
-    directions.push(x < y ? 'right' : 'up');
-
-  if (x > 0.5 && y > 0.5)
-    directions.push(x > y ? 'right' : 'down');
-});
+getElement('#up').onclick = () => handleDirection('up');
+getElement('#down').onclick = () => handleDirection('down');
+getElement('#left').onclick = () => handleDirection('left');
+getElement('#right').onclick = () => handleDirection('right');
+button.onclick = handleEnter;
