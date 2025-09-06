@@ -1,3 +1,4 @@
+import { getRandom } from "./common";
 import { blackCat } from "./levels";
 
 type Scale = {
@@ -39,16 +40,20 @@ export function drawLevel(level: Level, state: GameState) {
     if (state.type === "home") {
         drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart + 4000, 9999999999999, 1, scale);
         drawPlayer(start, start, scale);
+        drawNotMove(start, scale);
     } else if (state.type === "before") {
         drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart, 9999999999999, 1, scale);
         drawPlayer(start, start, scale);
+        drawNotMove(start, scale);
     } else if (state.type === "cat") {
         drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, 0, state.timeStart, 1, scale);
         drawPlayer(start, start, scale);
+        drawNotMove(start, scale);
         // draw cats
         cats.forEach(cat => drawCat(cat, state.timeStart, size, boxes, scale));
     } else if (state.type === "game") {
         drawPlayer(state.positionBefore, state.positionAfter, scale);
+        drawNotMove(start, scale, state.timeStart);
     } else if (state.type === "catastrophe") {
         drawPlayer(state.position, state.position, scale);
         drawCatastrophe(state.position, scale);
@@ -112,7 +117,7 @@ const grassColor = "#117c13";
 const grassTopColor = "#138510";
 const gridColor = 'rgba(255, 255, 255, 0.15)';
 
-const eyesCount = 3;
+const eyesCount = 7;
 let eyes: { position: Position, sizeEyes: number, opacity: number, timeStart: number, timeEnd: number }[] = [];
 
 function drawLand(size: Size, scale: Scale) {
@@ -239,15 +244,57 @@ function drawLand(size: Size, scale: Scale) {
     }
 }
 
+export function drawDirections(directions: Direction[], size: Size) {
+    const dirs = directions.map(d => d === "up" ? "↑" : d === "down" ? "↓" : d === "left" ? "←" : "→")
 
-function drawEnd(position: Position, scale: Scale) {
-    const candyWidth = scale.squareSize * 0.6;
-    const candyHeight = scale.squareSize * 0.4;
-    const candySide = scale.squareSize * 0.25;
+    const scale = getScale(size);
 
+    const x = scale.x(size.x / 2 + 1);
+    const y = scale.y(size.y + 1.1);
+
+    ctx.font = `18px sans-serif`;
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#AAA';
+    ctx.fillText(dirs.join(' '), x, y);
+}
+
+function drawNotMove(position: Position, scale: Scale, timeHide?: number) {
     const x = scale.x(position.x + 0.5);
     const y = scale.y(position.y + 0.5);
 
+    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+
+    ctx.save();
+
+    if (timeHide)
+        ctx.globalAlpha = 1 - elseInOutAtTime(timeHide, 300);
+
+    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText("🚧", x, y + animation * scale.squareSize * 0.1);
+
+    ctx.restore();
+}
+
+const candies = ["🍬", "🍭", "🍮", "🍫", "🍯", "🎂", "🍰", "🍩", "🍪", "🧁", "🥧"];
+let candy = getRandom(candies);
+export function setNewEnd() {
+    return candy = getRandom(candies);
+}
+
+function drawEnd(position: Position, scale: Scale) {
+    const x = scale.x(position.x + 0.5);
+    const y = scale.y(position.y + 0.5);
+
+    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+
+    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(candy, x, y + animation * scale.squareSize * 0.1);
+    /*
     const primaryColor = '#FFD700';
     const secondaryColor = '#DC143C';
 
@@ -284,8 +331,12 @@ function drawEnd(position: Position, scale: Scale) {
     ctx.lineTo(x + candyWidth / 2 + candySide, y + candyHeight / 2);
     ctx.closePath();
     ctx.fill();
+    */
 }
 
+/**
+ * 📦 🗃️ 🗳️ 🎁
+ */
 function drawBox(position: Position, scale: Scale) {
     const x = scale.x(position.x + 0.1);
     const y = scale.y(position.y + 0.2);
@@ -294,6 +345,9 @@ function drawBox(position: Position, scale: Scale) {
 
     const boxDepth = height * 0.6; // Hloubka krabice
     const flapOffset = 10; // Jak moc se klopa "zvedá"
+
+    // TODO: animate
+    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
 
     // Bottom
     ctx.fillStyle = '#222';
@@ -342,6 +396,29 @@ function drawBox(position: Position, scale: Scale) {
     ctx.stroke();
 }
 
+
+/*
+🚶 (U+1F6B6): Chodec. Zobrazuje osobu v pohybu.
+🧍 (U+1F9CD): Stojící osoba.
+🏃 (U+1F3C3): Běžec. Značí sportovní aktivitu nebo spěch.
+🤸 (U+1F938): Gymnasta nebo akrobat. Symbolizuje flexibilitu nebo fyzické umění.
+🧘 (U+1F9D8): Osoba v lotosu (meditující).
+🙋 (U+1F64B): Osoba zvedající ruku. Používá se pro přihlášení, odpověď nebo pozdrav.
+🙅 (U+1F645): Osoba s gestem „ne“. Značí odmítnutí nebo zákaz.
+🤷 (U+1F937): Osoba pokrčující rameny. Vyjadřuje nejistotu nebo nevědomost.
+
+🧑 (U+1F9D1): Dospělá osoba bez určení pohlaví.
+👨 (U+1F468): Muž.
+👩 (U+1F469): Žena.
+👴 (U+1F474): Starý muž.
+👵 (U+1F475): Stará žena.
+👶 (U+1F476): Dítě.
+
+👮 (U+1F46E): Policista.
+👨‍⚕️ (U+1F468 + U+200D + U+2695): Lékař.
+🧑‍🍳 (U+1F9D1 + U+200D + U+1F373): Kuchař nebo šéfkuchař.
+🧑‍🏫 (U+1F9D1 + U+200D + U+1F3EB): Učitel.
+ */
 function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Scale) {
     const position = getTimePosition(positionBefore, positionAfter);
 
@@ -415,6 +492,9 @@ function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Sc
     ctx.stroke();
 }
 
+/**
+ * 🐈 🐈‍⬛ 🐱 😺...(faces)
+ */
 function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], scale: Scale) {
     const { isDone, position, direction } = getCatPosition(cat, timeStart, size, boxes);
 
@@ -502,14 +582,22 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
     ctx.restore();
 }
 
-
+const catastrophes = ["❗", "⚠️", "❌", "🚫", "🛑"];
+let catastrophe = getRandom(candies);
+export function setNewCatastrophe() {
+    return catastrophe = getRandom(catastrophes);
+}
 
 function drawCatastrophe(position: Position, scale: Scale) {
-    ctx.beginPath();
-    ctx.arc(scale.x(position.x + 0.5), scale.y(position.y + 0.5), scale.squareSize * 0.3, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
-    ctx.fill();
-    ctx.closePath();
+    const x = scale.x(position.x + 0.5);
+    const y = scale.y(position.y + 0.5);
+
+    const animation = easeInOut(getTimeScale(0.5)) - 0.5;
+
+    ctx.font = `${scale.squareSize * 0.8}px sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(catastrophe, x, y + animation * scale.squareSize * 0.1);
 }
 
 function drawEyes(position: Position, size: number, timeStart: number, timeEnd: number, opacity: number, scale: Scale) {
