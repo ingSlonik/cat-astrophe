@@ -122,6 +122,10 @@ a {
     gap: 5px;
 }
 
+#arrows button {
+    font-size: 28px;
+}
+
 button {
     display: block;
     margin: 0px auto;

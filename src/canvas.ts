@@ -38,15 +38,15 @@ export function drawLevel(level: Level, state: GameState) {
     boxes.forEach((box, i) => drawBox(box, scale, i));
 
     if (state.type === "home") {
-        drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart + 4000, 9999999999999, 1, scale);
+        drawEyes({ x: size.x / 2 + 1, y: 1 }, 2, state.timeStart + 4000, 9999999999999, 1, scale);
         drawPlayer(start, start, scale);
         drawNotMove(start, scale);
     } else if (state.type === "before") {
-        drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, state.timeStart, 9999999999999, 1, scale);
+        drawEyes({ x: size.x / 2 + 1, y: 1 }, 2, state.timeStart, 9999999999999, 1, scale);
         drawPlayer(start, start, scale);
         drawNotMove(start, scale);
     } else if (state.type === "cat") {
-        drawEyes({ x: size.x / 2 + 1, y: 1.5 }, 2, 0, state.timeStart, 1, scale);
+        drawEyes({ x: size.x / 2 + 1, y: 1 }, 2, 0, state.timeStart, 1, scale);
         drawPlayer(start, start, scale);
         drawNotMove(start, scale);
         // draw cats
