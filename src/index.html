@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Cat-astrophe!</title>
-    <meta name="viewport" content="width=500px, user-scalable=no">
+    <meta name="viewport" content="width=700px, user-scalable=no">
     <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -17,14 +17,18 @@
         <button id="music">🔊</button>
         <button id="sound">💬</button>
     </div>
-    <div id="text"></div>
-    <button id="the-button"></button>
+    <div id="content">
+        <div id="text"></div>
+        <button id="the-button"></button>
+    </div>
     <div id="arrows">
         <div><button id="up">↑</button></div>
         <div><button id="left">←</button><button id="down">↓</button><button id="right">→</button></div>
     </div>
-    <div id="subtitles" class="hide"></div>
-    <div id="footer">&copy; 2025 <a href="https://paulu.cz/" target="_blank">Filip Paulů</a></div>
+    <div id="subtitles-wrap">
+        <div id="subtitles" class="hide"></div>
+    </div>
+    <div id="footer">Created by <a href="https://paulu.cz/" target="_blank">Filip</a></div>
     <canvas id="canvas"></canvas>
     <script type="module" src="app.ts"></script>
 </body>

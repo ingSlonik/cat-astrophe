@@ -28,26 +28,78 @@ canvas {
     z-index: 1;
 }
 
-#score {}
+h1 {
+    margin: 20px;
+    padding: 0px;
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 26px;
+    margin: 10px;
+    margin-bottom: 40px;
+}
+
+p {
+    margin: 20px 0px;
+}
+
+#score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    white-space: pre;
+    text-align: left;
+}
 
 #controls {
     position: absolute;
-    top: 10px;
+    top: 20px;
     right: 20px;
     display: flex;
+    gap: 10px;
+}
+
+#controls button {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 10px 20px;
+    font-size: 30px;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 40px;
+    padding-top: 100px;
+    gap: 50px;
 }
 
 #text,
 #subtitles {
+    display: block;
+    width: auto;
     padding: 20px 30px;
-    margin: 20px auto;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 16px;
 }
 
 #footer {
     text-align: right;
-    padding: 12px 24px;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #DDD;
+}
+
+#subtitles-wrap {
+    position: absolute;
+    bottom: 200px;
+    left: 0;
+    right: 0;
+    padding: 0px 40px;
+    display: flex;
+    justify-content: center;
 }
 
 a {
@@ -57,22 +109,52 @@ a {
 #arrows {
     position: absolute;
     bottom: 20px;
-    right: 30px;
+    right: 0px;
+    left: 0px;
     display: flex;
+    align-items: center;
     flex-direction: column;
+    gap: 10px;
 }
 
 #arrows>div {
     display: flex;
+    gap: 5px;
 }
 
 button {
     display: block;
-    margin: 20px auto;
-    padding: 20px 50px;
+    margin: 0px auto;
+    padding: 20px 40px;
     font-size: 22px;
     font-weight: bold;
+    transition: all 0.3s ease;
     cursor: pointer;
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: #8B4513;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 0 #654321;
+}
+
+button:hover {
+    background-color: #A0522D;
+    scale: 1.2;
+}
+
+button:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #654321;
+}
+
+button:focus {
+    outline: none;
 }
 
 #start {
