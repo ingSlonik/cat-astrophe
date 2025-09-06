@@ -262,8 +262,14 @@ const voicesCatalog = {
 const synth = window.speechSynthesis;
 
 export function speak(text: string, voiceType: keyof typeof voicesCatalog = "normal", volume = 1, rate = 1) {
+    // Show subtitles
+    subtitles.className = "";
+    subtitles.innerText = text;
+
     const { controls: { sound } } = getStore();
-    if (!sound) return;
+    if (!sound)
+        return setTimeout(() => subtitles.className = "hide", 4000);
+
 
     let voiceNames = voicesCatalog[voiceType];
     let voice = voices.find(v => voiceNames.includes(v.name.split(" ")[0]));
@@ -285,16 +291,13 @@ export function speak(text: string, voiceType: keyof typeof voicesCatalog = "nor
 
     // Only once per time!!!
     speakStop();
-    subtitles.className = ""
     synth.speak(utterance);
 
-    subtitles.innerText = text;
     utterance.onend = () => subtitles.className = "hide";
 }
 
 export function speakStop() {
     synth.cancel();
-    subtitles.className = "";
 }
 
 // for chrome
