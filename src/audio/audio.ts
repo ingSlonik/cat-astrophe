@@ -1,4 +1,4 @@
-import { zzfx } from 'ZzFX';
+//import { zzfx } from 'ZzFX';
 import { getRandom } from '../common';
 import { getStore } from '../app';
 import { playMeow } from './meow';
@@ -7,37 +7,16 @@ import { subtitles } from '../dom';
 
 export function playMusic() {
     const { controls: { music } } = getStore();
-    if (music)
-        zzfx(...[
-            0.5,
-            ,
-            89,
-            0.09,
-            0.11,
-            0.27,
-            ,
-            0.2,
-            7,
-            8,
-            ,
-            ,
-            ,
-            1.2,
-            ,
-            0.9,
-            ,
-            0.4,
-            0.06,
-            ,
-            1299,
-        ]);
+    if (music) {
+        // TODO: add music
+    }
 }
 
 const cats = ["🐈", "🐱", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"];
 
 export function meow() {
     const { controls: { sound } } = getStore();
-    // zzfx(...[, , 129, .01, , .15, , , , , , , , 5]); // Drum
+
     if (sound) {
         playMeow(Math.random() * 500 + 700, 0.6);
         const cat = getRandom(cats);
@@ -213,37 +192,66 @@ export function speakCatastrophe() {
     speak(text, voice);
 }
 
+const winDialogs = [
+    "Yes! This is exactly what I needed.",
+    "Victory is sweet! Literally.",
+    "Worth it. Every single cursed step.",
+    "I faced down fate and black cats for this. And I'd do it again.",
+    "Finally! My precious!",
+    "If I don't get some sugar, I might just jump out of this screen and slap you. You're lucky!",
+    "About time! My blood sugar was getting dangerously low.",
+    "This better be good. I went through heck for this donut.",
+    "Give it to me. The sugar cravings... they're getting stronger.",
+    "One more minute and I would not have been responsible for my actions.",
+    "Oh, look. A cake. All that for a piece of cake. Fantastic.",
+    "Well, that was an ordeal. This better have extra frosting.",
+    "I can't believe that actually worked. Now, where's the fork?",
+    "So, is this my reward for not being crushed by a meteor? I'll take it.",
+    "Task completed. Now initiating sugar consumption protocol.",
+    "Hello, beautiful. I've missed you.",
+    "Don't mind if I do. And I do.",
+    "The sight, the smell... the glorious taste awaits!",
+    "Time to ruin my dinner. And it feels so good.",
+    "I'm going to eat this so fast, you won't even see it happen."
+];
+export function speakWin() {
+    const text = getRandom(winDialogs);
+    speak(text, "soldier");
+}
+
+
+// Works only for Mac :/
 const voicesCatalog = {
     normal: [
         "Daniel",
-        "Aaron", // Chrome
+        "Aaron",
     ],
     meow: [
         "Superstar",
         "Samantha",
     ],
     robot: [
-        "Trinoids", // Chrome
+        "Trinoids",
         "Zarvox",
     ],
     robotSing: [
-        "Organ", // Chrome
+        "Organ",
     ],
     soldier: [
-        "Whisper", // Chrome, FF, Safari
+        "Whisper",
     ],
     laugh: [
-        "Jester", // Chrome (big laugh)
-        "Wobble", // FF
+        "Jester",
+        "Wobble",
     ],
     chiming: [
-        "Bells", // Chrome
+        "Bells",
     ],
     bubbling: [
-        "Bubbles", // Chrome, FF
+        "Bubbles",
     ],
     sing: [
-        "Cellos", // Chrome
+        "Cellos",
     ],
     funeral: [
         "Bad News"
@@ -277,6 +285,7 @@ export function speak(text: string, voiceType: keyof typeof voicesCatalog = "nor
 
     // Only once per time!!!
     speakStop();
+    subtitles.className = ""
     synth.speak(utterance);
 
     subtitles.innerText = text;

@@ -1,7 +1,7 @@
 import { arrows, button, scoreElement, textElement } from "./dom";
 import { drawDirections, drawLevel, getCatPosition, getMovedPosition, getTimeScale, isBox, isOut, setNewCatastrophe, setNewEnd, setupCanvas } from "./canvas";
 import levels from "./levels";
-import { meow, speak, speakCatastrophe, speakDirection, speakStartGame, speakStop } from "./audio/audio";
+import { meow, speak, speakCatastrophe, speakDirection, speakStartGame, speakStop, speakWin } from "./audio/audio";
 
 let store: Store = {
     controls: {
@@ -175,14 +175,16 @@ function draw() {
 
             // WIN - next level
             if (position.x === end.x && position.y === end.y) {
-                setNewEnd();
                 const newLevel = store.score.level + 1;
                 if (newLevel >= levels.length) {
                     changeState("end");
                 } else {
                     store.score.level++;
+                    setNewEnd();
                     changeState("before");
                 }
+
+                speakWin();
             }
 
             // CAT-ASTROPHE
