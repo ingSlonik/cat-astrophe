@@ -1,4 +1,8 @@
 type Store = {
+    controls: {
+        music: boolean,
+        sound: boolean,
+    },
     state: GameState,
     score: Score,
 }
@@ -12,7 +16,7 @@ type GameState =
     | { type: "home", timeStart: number }
     | { type: "before", timeStart: number }
     | { type: "cat", timeStart: number }
-    | { type: "game", positionBefore: Position, positionAfter: Position, map: boolean[][] }
+    | { type: "game", timeStart: number, positionBefore: Position, positionAfter: Position, map: boolean[][] }
     | { type: "catastrophe", position: Position }
     | { type: "end", position: Position };
 
