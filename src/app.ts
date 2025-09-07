@@ -113,7 +113,8 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
         textElement.className = button.className = "hide";
 
         speakStop();
-        meow();
+        // play meow for every cat in level
+        level.cats.forEach((_, i) => setTimeout(meow, i * 1500 / level.cats.length));
 
     } else if (stateType === "game") {
         if (!map) throw new Error("map is undefined");
