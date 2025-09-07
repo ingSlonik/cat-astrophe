@@ -183,19 +183,19 @@ function drawLand(size: Size, scale: Scale) {
 
 
     // Draw grass
-    const animationLand3 = easeInOut(getTimeScale(0.05, 0)) - 0.5;
+    const animationLand3 = easeInOut(getTimeScale(0.05, 0));
     ctx.fillStyle = "#696f6f55";
     ctx.beginPath();
     ctx.roundRect(landX + 30 + animationLand3 * 5, landY + 30 + animationLand3 * 5, landWidth, landHeight, landRound);
     ctx.fill();
 
-    const animationLand2 = easeInOut(getTimeScale(0.05, 0.2)) - 0.5;
+    const animationLand2 = easeInOut(getTimeScale(0.05, 0.2));
     ctx.fillStyle = "#543b0e";
     ctx.beginPath();
     ctx.roundRect(landX + 20 + animationLand2 * 3, landY + 20 + animationLand2 * 3, landWidth, landHeight, landRound);
     ctx.fill();
 
-    const animationLand1 = easeInOut(getTimeScale(0.05, 0.5)) - 0.5;
+    const animationLand1 = easeInOut(getTimeScale(0.05, 0.4));
     ctx.fillStyle = "#674107";
     ctx.beginPath();
     ctx.roundRect(landX + 10 + animationLand1 * 2, landY + 10 + animationLand1 * 2, landWidth, landHeight, landRound);
@@ -564,7 +564,7 @@ function drawPlayer(positionBefore: Position, positionAfter: Position, scale: Sc
     ctx.lineWidth = s * 0.1;
     ctx.lineCap = "round";
 
-    var grad = ctx.createLinearGradient(s * 0.4, s * -0.6, s * 0.4, s * -0.3);
+    const grad = ctx.createLinearGradient(s * 0.4, s * -0.6, s * 0.4, s * -0.3);
     grad.addColorStop(0, "rgba(180, 180, 180, 0.9)");
     grad.addColorStop(1, "rgba(255, 255, 255, 0.1)");
 
@@ -739,44 +739,10 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
 
     ctx.fillStyle = cat.color;
     ctx.strokeStyle = cat.color;
-    ctx.lineCap = "round";
-    ctx.lineWidth = r * 0.2;
-
-    ctx.beginPath();
-    ctx.moveTo(x, assY);
-    ctx.quadraticCurveTo(x - animation * r * 0.4, tailCenterY, x, tailTopY);
-    ctx.stroke();
-
-    ctx.lineWidth = r * 1.4;
-
-    ctx.beginPath();
-    ctx.moveTo(x, assY);
-    ctx.quadraticCurveTo(x + animation * r * 0.2, bodyY, x, headY);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(x, headY, r, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Ears
-    ctx.strokeStyle = "#888";
-    ctx.lineWidth = 1;
-
-    ctx.beginPath();
-    ctx.moveTo(x - r * 0.1, headY + r * 0.1);
-    ctx.lineTo(x - r * 0.5, headY - r * 0.4);
-    ctx.lineTo(x - r * 0.8, headY + r * 0.1);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(x + r * 0.1, headY + r * 0.1);
-    ctx.lineTo(x + r * 0.5, headY - r * 0.4);
-    ctx.lineTo(x + r * 0.8, headY + r * 0.1);
-    ctx.stroke();
 
     // Paws
     ctx.lineWidth = r * 0.6;
-    ctx.strokeStyle = cat.color;
+    ctx.lineCap = "round";
 
     if (state === "walk") {
         ctx.beginPath();
@@ -820,6 +786,44 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
         ctx.lineTo(x + r * 0.3, assY - r * (0.3 + 0.5));
         ctx.stroke();
     }
+
+    // Cat body
+    ctx.lineWidth = r * 0.2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, assY);
+    ctx.quadraticCurveTo(x - animation * r * 0.4, tailCenterY, x, tailTopY);
+    ctx.stroke();
+
+    ctx.lineWidth = r * 1.4;
+
+    ctx.beginPath();
+    ctx.moveTo(x, assY);
+    ctx.quadraticCurveTo(x + animation * r * 0.2, bodyY, x, headY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(x, headY, r, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Ears
+    const grad = ctx.createLinearGradient(x - r * 0.1, headY + r * 0.1, x - r * 0.1, headY - r * 0.4);
+    grad.addColorStop(0, "rgba(255, 255, 255, 0.4)");
+    grad.addColorStop(1, "rgba(255, 255, 255, 0.9)");
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = s * 0.01;
+
+    ctx.beginPath();
+    ctx.moveTo(x - r * 0.1, headY + r * 0.1);
+    ctx.lineTo(x - r * 0.5, headY - r * 0.4);
+    ctx.lineTo(x - r * 0.8, headY + r * 0.1);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x + r * 0.1, headY + r * 0.1);
+    ctx.lineTo(x + r * 0.5, headY - r * 0.4);
+    ctx.lineTo(x + r * 0.8, headY + r * 0.1);
+    ctx.stroke();
 
     ctx.restore();
 }
