@@ -170,25 +170,43 @@ function drawLand(size: Size, scale: Scale) {
     }
     eyes.forEach(eye => drawEyes(eye.position, eye.sizeEyes, eye.timeStart, eye.timeEnd, eye.opacity, scale));
 
+
     // Draw land
     const landX = scale.x(1);
     const landY = scale.y(1);
     const landWidth = scale.x(size.x + 1) - scale.x(1);
     const landHeight = scale.y(size.y + 1) - scale.y(1);
+    const landRound = scale.squareSize * 0.4;
 
     // ctx.fillStyle = landColor;
     // ctx.fillRect(landX, landY, landWidth, landHeight);
 
 
     // Draw grass
+    ctx.fillStyle = "#696f6f55";
+    ctx.beginPath();
+    ctx.roundRect(landX + 30, landY + 30, landWidth, landHeight, landRound);
+    ctx.fill();
+
+    ctx.fillStyle = "#543b0e";
+    ctx.beginPath();
+    ctx.roundRect(landX + 20, landY + 20, landWidth, landHeight, landRound);
+    ctx.fill();
+
+    ctx.fillStyle = "#674107";
+    ctx.beginPath();
+    ctx.roundRect(landX + 10, landY + 10, landWidth, landHeight, landRound);
+    ctx.fill();
+
     ctx.fillStyle = grassColor;
     ctx.beginPath();
-    ctx.fillRect(landX, landY, landWidth, landHeight);
+    ctx.roundRect(landX, landY, landWidth, landHeight, landRound);
+    ctx.fill();
 
     ctx.save();
 
     ctx.beginPath();
-    ctx.rect(landX, landY, landWidth, landHeight);
+    ctx.roundRect(landX, landY, landWidth, landHeight, landRound);
     ctx.clip();
 
     const width = scale.squareSize / 2;
