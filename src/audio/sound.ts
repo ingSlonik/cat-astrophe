@@ -1,7 +1,7 @@
 import { getStore } from "../app";
 
 // Karel Plíhal - Pohádka
-const tabsMelody = `
+const tabs = `
 |------------0b--|----2b----------|----0b----------|
 |----0b--1b------|3b------0b--0-3-|1b----------3-1-|
 |0b----0---0---0-|--0---0---0-----|--0---0-2b------|
@@ -34,7 +34,7 @@ const tabs = `
 `;
 */
 
-type Song = { note: string, freq: number, duration: number, volume: number, isBass: boolean }[][];
+type Song = { note: string, flag: string, freq: number, volume: number }[][];
 
 const allNotes = "C C# D D# E F F# G G# A A# B".split(" ");
 const guitarStrings = "E4 B3 G3 D3 A2 E2".split(" ");
@@ -50,20 +50,12 @@ function getSongFromTabs(tabs: string): Song {
 
     const song: Song = [];
 
-    // let duration = 0;
-    // let lastNote = "";
-    // let bassDuration = 0;
-    // let lastBassNote = "";
-
-    // For this song every second is highlighted
-    let isOdd = false;
-
     for (let t = 0; t < tabLine[0].length; t++) {
         const step: Song[number] = [];
 
         for (let s = 0; s < guitarStrings.length; s++) {
             const value = tabLine[s][t];
-            if (value !== "-" && value !== "b") {
+            if (isNumber(value)) {
                 const threshold = parseInt(value);
 
                 const [stringNoteChar, stringNoteNumber] = guitarStrings[s];
@@ -75,16 +67,12 @@ function getSongFromTabs(tabs: string): Song {
 
                 const note = noteChar + noteNumber;
 
-                const isBass = tabLine[s][t + 1] === "b";
+                const flagChar = tabLine[s][t + 1];
+                const flag = isLetter(flagChar) ? flagChar : "";
 
-                if (!isBass) isOdd = !isOdd;
-
-                // duration = 0;
-                // lastNote = note;
                 step.push({
-                    isBass,
-                    duration: 3,
                     note,
+                    flag,
                     freq: getNoteFrequency(note),
                     volume: 1,
                 })
@@ -97,11 +85,14 @@ function getSongFromTabs(tabs: string): Song {
     return song;
 }
 
-
-const songMelody = getSongFromTabs(tabsMelody);
-// const songBass = getSongFromTabs(tabsBass);
-
-console.log(songMelody);
+function isNumber(char: string) {
+    const num = parseInt(char);
+    return num.toString() === char;
+}
+function isLetter(char?: string) {
+    if (!char) return false;
+    return /[a-zA-Z]/.test(char);
+}
 
 function getNoteFrequency(noteString: string) {
     const semitonesFromA = {
@@ -142,6 +133,9 @@ function getNoteFrequency(noteString: string) {
     return frequency;
 }
 
+
+const song = getSongFromTabs(tabs);
+
 let audioCtx: AudioContext;
 
 let isMusicPlaying = false;
@@ -156,10 +150,6 @@ export function playMusic() {
     playNote(0);
 }
 
-export function stopMusic() {
-    isMusicPlaying = false;
-}
-
 function playNote(step = 0) {
     const { controls: { music } } = getStore();
 
@@ -167,7 +157,7 @@ function playNote(step = 0) {
         return isMusicPlaying = false;
 
     const noteDuration = 0.2;
-    const beat = songMelody[step];
+    const beat = song[step];
 
     // song end, play again
     if (!beat)
@@ -177,12 +167,10 @@ function playNote(step = 0) {
     setTimeout(() => playNote(step + 1), noteDuration * 1000);
 
     beat.forEach(note => {
-        if (note.isBass) {
-            playGuitarTone(note.freq, note.duration * noteDuration, note.volume * 0.4);
-            // playGuitarTone(note.freq * 5 / 4, note.duration * noteDuration, note.volume * 0.5);
-            // playGuitarTone(note.freq / 2, note.duration * noteDuration, note.volume * 0.5);
+        if (note.flag === "b") {
+            playGuitarTone(note.freq, 3 * noteDuration, note.volume * 0.4);
         } else {
-            playGuitarTone(note.freq, note.duration * noteDuration, note.volume * 0.2);
+            playGuitarTone(note.freq, 2 * noteDuration, note.volume * 0.2);
         }
     });
 }
