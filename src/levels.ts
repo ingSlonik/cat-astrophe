@@ -1,7 +1,12 @@
-export const blackCat = "black";
-export const brownCat = "brown";
+export const blackCat = "#000000";
+const brownCat = "#654321";
+const whiteCat = "#FFFFFF";
+const orangeCat = "#FF4500";
+const fawnCat = "#FFFDD0";
+const creamCat = "#F5F5DC";
 
 export default [
+    /*
     // 1
     {
         size: { x: 5, y: 5 },
@@ -72,6 +77,7 @@ export default [
             ],
         }],
     },
+    */
     // 5
     {
         size: { x: 5, y: 5 },

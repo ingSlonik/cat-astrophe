@@ -808,8 +808,13 @@ function drawCat(cat: Cat, timeStart: number, size: Size, boxes: Position[], sca
 
     // Ears
     const grad = ctx.createLinearGradient(x - r * 0.1, headY + r * 0.1, x - r * 0.1, headY - r * 0.4);
-    grad.addColorStop(0, "rgba(255, 255, 255, 0.4)");
-    grad.addColorStop(1, "rgba(255, 255, 255, 0.9)");
+    if (cat.color.includes("FF") || cat.color.includes("F5")) {
+        grad.addColorStop(0, "rgba(0, 0, 0, 0.4)");
+        grad.addColorStop(1, "rgba(0, 0, 0, 0.9)");
+    } else {
+        grad.addColorStop(0, "rgba(255, 255, 255, 0.4)");
+        grad.addColorStop(1, "rgba(255, 255, 255, 0.9)");
+    }
     ctx.strokeStyle = grad;
     ctx.lineWidth = s * 0.01;
 
