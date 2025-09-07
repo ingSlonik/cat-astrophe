@@ -183,19 +183,22 @@ function drawLand(size: Size, scale: Scale) {
 
 
     // Draw grass
+    const animationLand3 = easeInOut(getTimeScale(0.05, 0)) - 0.5;
     ctx.fillStyle = "#696f6f55";
     ctx.beginPath();
-    ctx.roundRect(landX + 30, landY + 30, landWidth, landHeight, landRound);
+    ctx.roundRect(landX + 30 + animationLand3 * 5, landY + 30 + animationLand3 * 5, landWidth, landHeight, landRound);
     ctx.fill();
 
+    const animationLand2 = easeInOut(getTimeScale(0.05, 0.2)) - 0.5;
     ctx.fillStyle = "#543b0e";
     ctx.beginPath();
-    ctx.roundRect(landX + 20, landY + 20, landWidth, landHeight, landRound);
+    ctx.roundRect(landX + 20 + animationLand2 * 3, landY + 20 + animationLand2 * 3, landWidth, landHeight, landRound);
     ctx.fill();
 
+    const animationLand1 = easeInOut(getTimeScale(0.05, 0.5)) - 0.5;
     ctx.fillStyle = "#674107";
     ctx.beginPath();
-    ctx.roundRect(landX + 10, landY + 10, landWidth, landHeight, landRound);
+    ctx.roundRect(landX + 10 + animationLand1 * 2, landY + 10 + animationLand1 * 2, landWidth, landHeight, landRound);
     ctx.fill();
 
     ctx.fillStyle = grassColor;
