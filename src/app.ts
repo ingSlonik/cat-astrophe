@@ -87,7 +87,7 @@ function changeState(stateType: GameState["type"], map?: boolean[][]) {
         textElement.innerHTML = `<h2>Cross the black cat's path and trigger a true Cat-astrophe!</h2>
 <p><b>Your mission:</b> Get the candy! ${getCandy()}</p>
 <p><b>Your obstacle:</b> One very unlucky black cat. 🐈‍⬛</p>
-<p><i>Use the arrows (← ↑ → ↓) to guide me.<br />Just... try not to get me killed, okay?</i></p>
+<p><i>Use the arrows (← ↑ → ↓) to guide me.</i></p>
 <p><b>Good luck! You're gonna need it. 😉</b></p>`;
         button.innerText = "Begin the Madness!";
         textElement.className = button.className = "";
