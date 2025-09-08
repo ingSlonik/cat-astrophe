@@ -224,7 +224,7 @@ function draw() {
 
     const level = levels[score.level];
 
-    scoreElement.innerText = `Level: ${score.level + 1}\nCat-astrophes: ${score.catastrophes}`;
+    scoreElement.innerText = `Level: ${score.level + 1} / ${levels.length}\nCat-astrophes: ${score.catastrophes}`;
 
     setupCanvas();
     drawLevel(level, state);
