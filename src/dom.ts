@@ -15,6 +15,19 @@ export const button = getElement('#the-button');
 export const arrows = getElement('#arrows');
 export const subtitles = getElement('#subtitles');
 
+let timeout = setTimeout(() => { }, 0);
+
+export function showSubtitles(text: string, catastrophe = false) {
+  clearTimeout(timeout);
+  subtitles.className = catastrophe ? "catastrophe" : "";
+  subtitles.innerText = text;
+}
+export function hideSubtitles(delay = 2_000) {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => subtitles.className += " hide", delay);
+}
+
+
 
 window.addEventListener('keydown', (event) => {
   // there is keyboard

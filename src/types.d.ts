@@ -37,6 +37,7 @@ type Cat = {
 };
 
 type Level = {
+    name: string,
     size: Size,
     start: Position,
     end: Position,

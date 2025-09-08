@@ -1,7 +1,7 @@
 import { getRandom } from '../common';
 import { getStore } from '../app';
 import { playMeow } from './sound';
-import { subtitles } from '../dom';
+import { hideSubtitles, showSubtitles, subtitles } from '../dom';
 
 
 const cats = ["🐈", "🐱", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"];
@@ -10,7 +10,7 @@ export function meow() {
     const { controls: { sound } } = getStore();
 
     if (sound) {
-        playMeow(Math.random() * 500 + 700, 0.6);
+        playMeow(Math.random() * 500 + 700, 0.4);
         const cat = getRandom(cats);
         subtitles.innerText = cat + " Meow " + cat;
         subtitles.className = "";
@@ -33,7 +33,7 @@ const directionDialogs = {
         "This way up.",
         "Why up?",
         "Gravity calls.",
-        "To the sky."
+        "To the sky.",
     ],
     "down": [
         "Down",
@@ -43,12 +43,10 @@ const directionDialogs = {
         "Let's drop.",
         "Descending.",
         "To the depths.",
-        "Watch your step.",
         "Down we go.",
         "What's below?",
         "Down there?",
         "Easy now.",
-        "Here I go."
     ],
     "left": [
         "Left",
@@ -56,14 +54,12 @@ const directionDialogs = {
         "Going left.",
         "Left it is.",
         "Leftward.",
-        "This way.",
         "A left.",
         "On my left.",
         "Left again.",
         "Why left?",
         "Nothing's right.",
-        "That way?",
-        "Alright, left."
+        "Alright, left.",
     ],
     "right": [
         "Right",
@@ -72,13 +68,10 @@ const directionDialogs = {
         "Right away.",
         "Rightward.",
         "That's right.",
-        "Correct.",
         "On my right.",
         "Right again?",
-        "Over here.",
-        "Why this way?",
         "Seems right.",
-        "Okay, right."
+        "Okay, right.",
     ]
 };
 
@@ -111,6 +104,164 @@ export function speakStartGame() {
     speak(text, "soldier");
 }
 
+const catastropheDialogs = [
+    "You stepped on a Lego brick with your bare foot. The pain was so intense, you briefly saw the future.",
+    "Your brain decided now was the perfect time to replay that moment in fifth grade when you accidentally called the teacher 'Mom.' The cringe was so physical you had to stop and curl into a ball.",
+    "You bit into your emergency chocolate chip cookie, only to discover it was oatmeal raisin. The betrayal.",
+    "Your emergency donut fell on the floor. You quickly invoked the 'five-second rule' to pick it up, only to immediately slip on it.",
+    "A tiny, personal rain cloud formed directly over your head and started to pour. You suddenly felt like the main character in a very sad cartoon.",
+    "For a split second, the paving stone you stepped on felt like it was made of Jell-O. The ensuing wave of uncertainty made you question the fabric of reality.",
+    "A sudden gust of wind blew directly into your eyes, forcing a sneeze so powerful it sent you one involuntary step backward.",
+    "You tripped, but instead of falling, you miraculously executed an elegant, albeit completely unintentional, pirouette. No one saw it, which is somehow even more tragic.",
+    "You just received a call from a man with a very serious voice, informing you that your subscription to 'Cactus Monthly' has expired. You've never owned a cactus in your life.",
+    "An old shopping list fell out of your pocket. Before you could grab it, a gust of wind plastered it onto the windshield of a passing bus. The world now knows you're out of toilet paper.",
+    "You just realized you've been humming the jingle from a cat food commercial all day. It's now permanently stuck in your head.",
+    "You spotted a coin on the ground. As you bent over to pick it up, your pants ripped in the most conspicuous way possible. You were so flustered, you left the coin behind.",
+    "You're suddenly struck with the cold horror of not being 100% sure you locked your front door. You spend the next five seconds frantically replaying your morning in a high-stakes mental thriller.",
+    "Your phone suddenly decides to play a video from your gallery at full volume. It's the one of you singing terribly off-key in the car. Your darkest secret is now public.",
+    "You confidently stride forward, only to step directly into a puddle you didn't see. Your brand new shoe and sock are now enjoying an unsolicited mud spa.",
+    "A pigeon executed a precision bombing run on you. For the rest of your walk, you pretend the new splotch on your shoulder is an avant-garde fashion statement.",
+    "A wave of panic hits as you can't find your keys in your pocket. Your heart stops for a second... before you find them in your other pocket.",
+    "You bit into your emergency cookie with such enthusiasm that you also bit your own tongue. For a brief moment, you saw the entire color spectrum and tasted pure, self-inflicted betrayal.",
+    "With your headphones on, you started singing along to your music, completely lost in the moment. You were not alone...",
+    "You put your T-shirt on inside out this morning in a rush. You spent the entire day wondering why people were giving you funny looks and why the tag was so incredibly itchy.",
+    "You let out a yawn so massive your jaw popped and got stuck open for a second. In that moment, your life as a perpetually surprised goldfish flashed before your eyes.",
+    "The coffee machine dispensed a cup, then proceeded to pour the coffee directly next to it. You watched the hot stream disappear, feeling a deep and personal sense of betrayal.",
+    "You walked face-first into a spiderweb, sparking five minutes of frantic, flailing combat-dancing against an unseen, eight-legged foe.",
+    "You answered your phone with an energetic 'Hello?!' only to realize no one was calling. You'd just accidentally unlocked it with your face and now look like you're having a heated conversation with yourself."
+];
+export function speakCatastrophe() {
+    const text = getRandom(catastropheDialogs);
+    speak(text, "normal", 1, 1, true); // normal is good to understand
+}
+
+const winDialogs = [
+    "Yes! This is exactly what I needed.",
+    "Victory is sweet! Literally.",
+    "Worth it. Every single cursed step.",
+    "I faced down fate and black cats for this. And I'd do it again.",
+    "Finally! My precious!",
+    "If I don't get some sugar, I might just jump out of this screen and slap you. You're lucky!",
+    "About time! My blood sugar was getting dangerously low.",
+    "This better be good. I went through heck for this donut.",
+    "Give it to me. The sugar cravings... they're getting stronger.",
+    "One more minute and I would not have been responsible for my actions.",
+    "Oh, look. A cake. All that for a piece of cake. Fantastic.",
+    "Well, that was an ordeal. This better have extra frosting.",
+    "I can't believe that actually worked. Now, where's the fork?",
+    "So, is this my reward for not being crushed by a meteor? I'll take it.",
+    "Task completed. Now initiating sugar consumption protocol.",
+    "Hello, beautiful. I've missed you.",
+    "The sight, the smell... the glorious taste awaits!",
+    "Time to ruin my dinner. And it feels so good.",
+    "I'm going to eat this so fast, you won't even see it happen."
+];
+export function speakWin() {
+    const text = getRandom(winDialogs);
+    speak(text, "soldier");
+}
+
+
+// Works only for Mac :/
+const voicesCatalog = {
+    normal: [
+        "daniel",
+        "aaron",
+    ],
+    meow: [
+        "superstar",
+        "samantha",
+    ],
+    robot: [
+        "trinoids",
+        "zarvox",
+    ],
+    robotSing: [
+        "organ",
+    ],
+    soldier: [
+        "whisper",
+    ],
+    laugh: [
+        "jester",
+        "wobble",
+    ],
+    chiming: [
+        "bells",
+    ],
+    bubbling: [
+        "bubbles",
+    ],
+    sing: [
+        "cellos",
+    ],
+    funeral: [
+        "bad", // news"
+    ],
+}
+
+
+const synth = window.speechSynthesis;
+
+
+export function speak(text: string, voiceType: keyof typeof voicesCatalog = "normal", volume = 1, rate = 1, catastrophe = false) {
+    // Show subtitles
+    showSubtitles(text, catastrophe);
+
+    const { controls: { sound } } = getStore();
+    if (!sound) {
+        // only subtitles
+        let delay = text.length * 0.2 * 1000; // 1s for 5 letters
+        if (delay < 2_000) delay = 2_000;
+        if (delay > 10_000) delay = 10_000;
+        hideSubtitles(delay);
+        return;
+    }
+
+    let voiceNames = voicesCatalog[voiceType];
+    let voice = voices.find(v => voiceNames.includes(v.name.toLocaleLowerCase().split(" ")[0]));
+
+    // If not special voice, try normal
+    if (!voice && voiceType !== "normal")
+        return speak(text, "normal");
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    if (voice) {
+        utterance.lang = voice.lang;
+        utterance.voice = voice;
+    }
+
+    utterance.volume = volume;
+    utterance.rate = rate;
+    // utterance.pitch = 1.5;
+
+    // Only once per time!!!
+    speakStop();
+    synth.speak(utterance);
+
+    utterance.onend = () => {
+        hideSubtitles();
+    };
+}
+
+
+export function speakStop() {
+    synth.cancel();
+}
+
+// for chrome
+let voices: SpeechSynthesisVoice[] = [];
+
+function setVoices() {
+    voices = speechSynthesis.getVoices().filter(v => v.localService && v.lang.includes("en"));
+}
+
+speechSynthesis.onvoiceschanged = setVoices;
+setVoices();
+
+// -----------------------------------  OLD  -----------------------------------
+/*
 const catastropheDialogs = {
     soldier: [
         "I think I just stepped in what that cat left behind.",
@@ -178,130 +329,40 @@ const catastropheDialogs = {
         "Flawless execution of a mistake.",
     ],
 };
+
+// Česky:
+Šlápl jsi bosou nohou na kostičku Lega. Bolest byla tak intenzivní, že jsi na chvíli viděl budoucnost.
+Tvůj mozek se rozhodl, že právě teď je ideální čas přehrát tu chvíli, kdy v páté třídě jsi zakřičel na paní učitelku "mami". Stud byl tak fyzický, že ses musel na chvíli zastavit a schoulit.
+Ukousl sis z záložní čokoládové sušenky jen aby zjistil, že to je ve skutečnosti ovesná s rozinkami. Ta zrada.
+Spadl ti na zem záložní donut. Rychle ho zvedl s tím, že "pěti vteřinové pravidlo" platí, ale uklouzl na něm.
+Z ničeho nic se nad tebou vytvořil malý, osobní dešťový mrak a začal ti pršet jen a pouze na hlavu. Cítil ses jako hlavní postava ve velmi smutném animovaném filmu.
+Na vteřinu se ti zdálo, že dlažební kostka, na kterou jis šlápl, byla z želatiny. Ten pocit nejistoty tě donutil zpochybnit celou realitu.
+Zvedl se poryv větru, který ti foukl přímo do očí a donutil kýchnout. Kýchnutí bylo tak silné, že jis udělal nechtěný krok dozadu na start.
+Zakopl jsi, ale místo pádu se ti nějakým zázrakem podařilo udělat elegantní, i když naprosto nechtěnou, piruetu. Nikdo to neviděl, což je možná ještě horší.
+Právě ti zavolal neznámý muž, aby ti s vážným hlasem oznámil, že tvé předplatné na časopis o pěstování kaktusů vypršelo. Nikdy jsi žádné kaktusy nepěstoval!
+Z kapsy ti vypadl starý nákupní seznam. Než jsi ho stačil zvednout, vítr ho odnesl a přilepil na čelní sklo projíždějícího autobusu, který je hned za touto mapou. Svět se teď dozví, že ti doma chybí toaletní papír.
+Uvědomil jsi si, že si celý den pobrukuješ melodii z reklamy na kočičí žrádlo. Ta písnička teď už nikdy neodejde.
+Všiml jsi si na zemi pětikoruny. Když jsi se pro ni sehnul, roztrhly se mu kalhoty na tom nejméně vhodném místě. Byl jsi tak roztušen, že pětikorunu jsi tam nechal.
+Právě jsi si s chladnou hrůzou uvědomil, že si nejsi na 100 % jistý, jestli jsi zamknul dveře od bytu. Následujících pět vteřin jsi prožil v hlavě napínavý thriller, ve kterém jsi si snažil zrekonstruovat své ranní pohyby.
+Telefon ve tvé kapse se z ničeho nic rozhodl přehrát na plnou hlasitost video z galerie. Bylo to video, kde zpíváš falešně v autě. Svět se právě dozvěděl tvé největší tajemství.
+S pocitem vítězství jsi vkročil do neviditelné louže. Tvá nová bota a ponožka teď prožívají vlastní bahenní lázně.
+Holub na tebe provedl precizní vzdušný útok. Zbytek cesty se tváříš, že ten flek na rameni je moderní umění.
+Srdce se ti zastavilo, když jsi v kapse nenahmatal klíče. Po vteřině paniky jsi je našel v té druhé.
+Kousl sis do své záložní sušenky s takovou vervou, až sis skřípl jazyk. Na okamžik jsi viděl všechny barvy vesmíru a ochutnal chuť zrady.
+Se sluchátky na uších sis začal zpívat nahlas v domnění, že jsi sám. Nebyl...
+Ráno jsi si ve spěchu oblékl tričko naruby. Celé dopoledne jsi nechápal, proč na tebe lidé tak divně koukají a proč tě ta cedulka tolik škrábe na krku.
+Zívnul sis tak mohutně, až ti v čelisti luplo a na vteřinu nešla zavřít. Během té chvíle ti hlavou prolétl celý život v roli věčně překvapené ryby.
+Automat na kávu ti vydal kelímek, ale nápoj poslal mimo. Sledoval jsi ten horký proud tekoucí do útrob stroje a cítil jsi hluboké, osobní zklamání.
+Vstoupil jsi do pavučiny, kterou jsi neviděl. Následujících pět minut jsi předváděl panický bojový tanec proti neviditelnému osminohému nepříteli.
+Zvedl jsi telefon a s energickým "Ano?" jsi zjistil, že nikdo nevolá. Jen sis omylem odemkl obrazovku obličejem a vypadal jsi, že si povídáš sám se sebou.
+
+
 export function speakCatastrophe() {
     const voice = getRandom(Object.keys(catastropheDialogs)) as keyof typeof catastropheDialogs;
     const text = getRandom(catastropheDialogs[voice]);
     speak(text, voice);
 }
-
-const winDialogs = [
-    "Yes! This is exactly what I needed.",
-    "Victory is sweet! Literally.",
-    "Worth it. Every single cursed step.",
-    "I faced down fate and black cats for this. And I'd do it again.",
-    "Finally! My precious!",
-    "If I don't get some sugar, I might just jump out of this screen and slap you. You're lucky!",
-    "About time! My blood sugar was getting dangerously low.",
-    "This better be good. I went through heck for this donut.",
-    "Give it to me. The sugar cravings... they're getting stronger.",
-    "One more minute and I would not have been responsible for my actions.",
-    "Oh, look. A cake. All that for a piece of cake. Fantastic.",
-    "Well, that was an ordeal. This better have extra frosting.",
-    "I can't believe that actually worked. Now, where's the fork?",
-    "So, is this my reward for not being crushed by a meteor? I'll take it.",
-    "Task completed. Now initiating sugar consumption protocol.",
-    "Hello, beautiful. I've missed you.",
-    "Don't mind if I do. And I do.",
-    "The sight, the smell... the glorious taste awaits!",
-    "Time to ruin my dinner. And it feels so good.",
-    "I'm going to eat this so fast, you won't even see it happen."
-];
-export function speakWin() {
-    const text = getRandom(winDialogs);
-    speak(text, "soldier");
-}
-
-
-// Works only for Mac :/
-const voicesCatalog = {
-    normal: [
-        "Daniel",
-        "Aaron",
-    ],
-    meow: [
-        "Superstar",
-        "Samantha",
-    ],
-    robot: [
-        "Trinoids",
-        "Zarvox",
-    ],
-    robotSing: [
-        "Organ",
-    ],
-    soldier: [
-        "Whisper",
-    ],
-    laugh: [
-        "Jester",
-        "Wobble",
-    ],
-    chiming: [
-        "Bells",
-    ],
-    bubbling: [
-        "Bubbles",
-    ],
-    sing: [
-        "Cellos",
-    ],
-    funeral: [
-        "Bad News"
-    ],
-}
-
-
-const synth = window.speechSynthesis;
-
-export function speak(text: string, voiceType: keyof typeof voicesCatalog = "normal", volume = 1, rate = 1) {
-    // Show subtitles
-    subtitles.className = "";
-    subtitles.innerText = text;
-
-    const { controls: { sound } } = getStore();
-    if (!sound)
-        return setTimeout(() => subtitles.className = "hide", 4000);
-
-
-    let voiceNames = voicesCatalog[voiceType];
-    let voice = voices.find(v => voiceNames.includes(v.name.split(" ")[0]));
-
-    // If not special voice, try normal
-    if (!voice && voiceType !== "normal")
-        return speak(text, "normal");
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    if (voice) {
-        utterance.lang = voice.lang;
-        utterance.voice = voice;
-    }
-
-    utterance.volume = volume;
-    utterance.rate = rate;
-    // utterance.pitch = 1.5;
-
-    // Only once per time!!!
-    speakStop();
-    synth.speak(utterance);
-
-    utterance.onend = () => subtitles.className = "hide";
-}
-
-export function speakStop() {
-    synth.cancel();
-}
-
-// for chrome
-let voices: SpeechSynthesisVoice[] = [];
-
-function setVoices() {
-    voices = speechSynthesis.getVoices().filter(v => v.localService && v.lang.includes("en"));
-}
-
-speechSynthesis.onvoiceschanged = setVoices;
-setVoices();
-
+*/
 
 // Safari
 /*

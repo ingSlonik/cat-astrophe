@@ -1,5 +1,8 @@
 import { getStore } from "../app";
 
+const musicVolume = 0.2;
+const meowVolume = 0.3;
+
 // Karel Plíhal - Pohádka
 const tabs = `
 |------------0b--|----2b----------|----0b----------|
@@ -170,7 +173,7 @@ function playNote(step = 0) {
         if (note.flag === "b") {
             playGuitarTone(note.freq, 3 * noteDuration, note.volume * 0.4);
         } else {
-            playGuitarTone(note.freq, 2 * noteDuration, note.volume * 0.2);
+            playGuitarTone(note.freq, 3 * noteDuration, note.volume * 0.2);
         }
     });
 }
@@ -182,9 +185,9 @@ function playGuitarTone(frequency: number, duration: number, volume: number, typ
     masterGain.connect(audioCtx.destination);
 
     masterGain.gain.setValueAtTime(0, now);
-    masterGain.gain.linearRampToValueAtTime(volume * 0.5, now + 0.02);
+    masterGain.gain.linearRampToValueAtTime(volume * musicVolume * 1, now + 0.02);
     // normal
-    masterGain.gain.linearRampToValueAtTime(volume * 0.2, now + duration / 2);
+    masterGain.gain.linearRampToValueAtTime(volume * musicVolume * 0.3, now + duration / 2);
     masterGain.gain.linearRampToValueAtTime(0, now + duration);
     // staccato
     // masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
@@ -264,10 +267,10 @@ export function playMeow(frequency: number, duration: number, volume = 0.5) {
     masterGain.gain.linearRampToValueAtTime(0.7, now + 0.05);
     masterGain.gain.linearRampToValueAtTime(0, now + duration);
 
-    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 1, volume * 1.0);
-    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 2, volume * 0.4);
-    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 3, volume * 0.2);
-    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 4, volume * 0.1);
+    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 1, meowVolume * volume * 1.0);
+    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 2, meowVolume * volume * 0.4);
+    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 3, meowVolume * volume * 0.2);
+    createHarmonic(audioCtx, masterGain, now, duration, baseFrequencies, 4, meowVolume * volume * 0.1);
 }
 
 function createHarmonic(context: AudioContext, mainGain: GainNode, startTime: number, duration: number, baseFreqs: BaseFrequencies, harmonicMultiplier: number, volume: number) {
