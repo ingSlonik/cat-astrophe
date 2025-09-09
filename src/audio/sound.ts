@@ -113,7 +113,7 @@ function getNoteFrequency(noteString: string) {
     const match = noteString.match(noteRegex);
 
     if (!match)
-        throw new Error("Neplatný formát noty. Použijte např. 'A4', 'C#5', 'Gb3'.")
+        throw new Error("Invalid note format.")
 
     const noteName = match[1];
     const accidental = match[2];
@@ -122,7 +122,7 @@ function getNoteFrequency(noteString: string) {
     const fullNoteName = noteName + accidental;
 
     if (!(fullNoteName in semitonesFromA))
-        throw new Error(`Neznámá nota: ${fullNoteName}`);
+        throw new Error(`Unknown note: ${fullNoteName}`);
 
     const octaveDifference = octave - 4;
     const octaveSteps = octaveDifference * 12;
