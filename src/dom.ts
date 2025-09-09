@@ -29,7 +29,11 @@ export function hideSubtitles(delay = 2_000) {
 
 
 
-window.addEventListener('keyup', (event) => {
+window.addEventListener('keydown', (event) => {
+  if (event.repeat) {
+    return; // Ignore recurring events
+  }
+
   // there is keyboard
   arrows.className = "hide";
 
