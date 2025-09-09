@@ -211,6 +211,7 @@ export function speak(text: string, voiceType: keyof typeof voicesCatalog = "nor
         let delay = text.length * 0.2 * 1000; // 1s for 5 letters
         if (delay < 2_000) delay = 2_000;
         if (delay > 10_000) delay = 10_000;
+        if (catastrophe) delay += 5_000;
         showSubtitles(text, catastrophe);
         hideSubtitles(delay);
         return;
@@ -241,7 +242,7 @@ export function speak(text: string, voiceType: keyof typeof voicesCatalog = "nor
     // Show subtitles
     showSubtitles(text, catastrophe);
 
-    utterance.onend = () => hideSubtitles();
+    utterance.onend = () => hideSubtitles(catastrophe ? 5_000 : 2_000);
 }
 
 
