@@ -30,9 +30,9 @@ export function hideSubtitles(delay = 2_000) {
 
 
 window.addEventListener('keydown', (event) => {
-  if (event.repeat) {
-    return; // Ignore recurring events
-  }
+  // Ignore recurring events (key hold)
+  if (event.repeat)
+    return;
 
   // there is keyboard
   arrows.className = "hide";

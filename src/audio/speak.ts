@@ -77,7 +77,7 @@ const directionDialogs = {
 
 export function speakDirection(direction: Direction) {
     const text = getRandom(directionDialogs[direction]);
-    speak(text, "soldier", 0.8, 1.2);
+    speak(text, "soldier", 0.6, 1.2);
 }
 
 const startGameDialogs = [
@@ -205,15 +205,13 @@ const synth = window.speechSynthesis;
 
 
 export function speak(text: string, voiceType: keyof typeof voicesCatalog = "normal", volume = 1, rate = 1, catastrophe = false) {
-    // Show subtitles
-    showSubtitles(text, catastrophe);
-
     const { controls: { sound } } = getStore();
     if (!sound) {
         // only subtitles
         let delay = text.length * 0.2 * 1000; // 1s for 5 letters
         if (delay < 2_000) delay = 2_000;
         if (delay > 10_000) delay = 10_000;
+        showSubtitles(text, catastrophe);
         hideSubtitles(delay);
         return;
     }
@@ -240,9 +238,10 @@ export function speak(text: string, voiceType: keyof typeof voicesCatalog = "nor
     speakStop();
     synth.speak(utterance);
 
-    utterance.onend = () => {
-        hideSubtitles();
-    };
+    // Show subtitles
+    showSubtitles(text, catastrophe);
+
+    utterance.onend = () => hideSubtitles();
 }
 
 
